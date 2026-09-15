@@ -26,6 +26,9 @@ def tools():return [tool for _,items in CATALOG.values() for tool in items]
 def resolve(root,tool):
     if tool not in tools():raise ValueError('Narzędzie spoza katalogu.')
     root=Path(root).resolve();directory=root/tool
+    executable=root/(tool+'.exe')
+    if executable.is_file() and not executable.is_symlink():
+        executable.resolve().relative_to(root);return executable
     if directory.is_symlink():raise ValueError('Dowiązania narzędzi nie są obsługiwane.')
     script=directory/('prestige.ps1' if tool=='prestige-windows-toolkit' else 'app.py')
     if script.is_symlink() or not script.is_file():raise FileNotFoundError(f'Brak zainstalowanego narzędzia: {tool}')
@@ -34,7 +37,8 @@ def resolve(root,tool):
 
 def launch(root,tool,arguments=()):
     script=resolve(root,tool)
-    if script.suffix=='.ps1':
+    if script.suffix=='.exe':cmd=[str(script),'--backend']
+    elif script.suffix=='.ps1':
         executable=shutil.which('pwsh')
         if not executable:raise FileNotFoundError('Wymagany PowerShell 7 (pwsh).')
         cmd=[executable,'-NoProfile','-File',str(script)]

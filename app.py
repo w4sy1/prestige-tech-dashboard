@@ -1,11 +1,12 @@
 from pathlib import Path
 import sys
+import os
 from launcher import CATALOG,launch,menu,resolve,tools
 from runtime import entry,parser
 
 def build():
     p=parser('Launcher Prestige Tech. Bez argumentów otwiera polskie menu.')
-    p.add_argument('--tools-root',default=str(Path(__file__).resolve().parent.parent))
+    p.add_argument('--tools-root',default=os.environ.get('PRESTIGE_TOOLS_ROOT',str(Path(__file__).resolve().parent.parent)))
     p.add_argument('--list',action='store_true');p.add_argument('--tool',choices=tools())
     p.add_argument('arguments',nargs='*')
     return p
