@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         fl = QHBoxLayout(footer)
         fl.setContentsMargins(12, 0, 14, 0)
 
-        ok = QLabel("âś“")
+        ok = QLabel("✓")
         ok.setAlignment(Qt.AlignCenter)
         ok.setFixedSize(34, 34)
         ok.setStyleSheet(
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
         left_text.addWidget(label("System gotowy", 9, TEXT, True))
         left_text.addWidget(
             label(
-                "Wszystkie funkcje dziaĹ‚ajÄ… poprawnie",
+                "Wszystkie funkcje działają poprawnie",
                 7,
                 MUTED,
             )
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
             self.choose_icon
         )
         self.home.modules_requested.connect(
-            lambda: self.navigate("ModuĹ‚y")
+            lambda: self.navigate("Moduły")
         )
         self.home.guide_requested.connect(
             lambda: self.navigate("Poradnik")
@@ -214,7 +214,7 @@ class MainWindow(QMainWindow):
         self.about.support_requested.connect(lambda: self.navigate("Wsparcie"))
         self.support.guide_requested.connect(lambda: self.navigate("Poradnik"))
 
-        self.navigate("Strona gĹ‚Ăłwna")
+        self.navigate("Strona główna")
 
     def wrap(self, widget):
         area = QScrollArea()
@@ -241,7 +241,7 @@ class MainWindow(QMainWindow):
 
     def navigate(self, name):
         if name == "Zainstalowane":
-            name = "ModuĹ‚y"
+            name = "Moduły"
         self.sidebar.set_active(name)
         if name == "Wsparcie":
             self.stack.setCurrentWidget(self.support_view)
@@ -252,13 +252,13 @@ class MainWindow(QMainWindow):
             return
 
 
-        if name == "Strona gĹ‚Ăłwna":
+        if name == "Strona główna":
             self.stack.setCurrentWidget(
                 self.home_view
             )
             return
 
-        if name == "ModuĹ‚y":
+        if name == "Moduły":
             self.modules.render()
             self.stack.setCurrentWidget(
                 self.modules_view
@@ -271,7 +271,7 @@ class MainWindow(QMainWindow):
             )
             return
 
-        if name == "NarzÄ™dzia systemowe":
+        if name == "Narzędzia systemowe":
             self.system_tools.render()
             self.stack.setCurrentWidget(
                 self.system_tools_view
@@ -314,7 +314,7 @@ class MainWindow(QMainWindow):
             )
             layout.addWidget(
                 label(
-                    "Sekcja bÄ™dzie rozwijana w kolejnej iteracji.",
+                    "Sekcja będzie rozwijana w kolejnej iteracji.",
                     9,
                     MUTED,
                 )
@@ -340,7 +340,7 @@ class MainWindow(QMainWindow):
 
     def filter_home(self, value):
         self.navigate(
-            "ModuĹ‚y"
+            "Moduły"
         )
 
         if value.startswith(
