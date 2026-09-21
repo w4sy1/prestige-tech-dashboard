@@ -1,299 +1,237 @@
-"""Standalone graphical shell. This file is copied into each independent project."""
-from pathlib import Path
-import argparse
-import codecs
-import json
-import os
-import queue
-import runpy
-import shutil
-import subprocess
-import sys
-import threading
-import tkinter as tk
-from tkinter import ttk,filedialog,messagebox,simpledialog
+﻿from pathlib import Path
+import os, tkinter as tk
+from tkinter import filedialog, messagebox
+from module_manager import APP_DIR, ModuleManager
 
-FROZEN=getattr(sys,'frozen',False)
-MAX_OUTPUT=64*1024
-BUNDLE=Path(getattr(sys,'_MEIPASS',Path(__file__).resolve().parent))
-TOOLS_ROOT=Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parent.parent
-ROOT=(Path(os.environ.get('LOCALAPPDATA',str(Path.home()/'.local/share')))/'PrestigeTech'/Path(sys.executable).stem) if FROZEN else Path(__file__).resolve().parent
-if FROZEN:
-    ROOT.mkdir(parents=True,exist_ok=True)
-    for name in ('metadata.json','prestige.ps1','src'):
-        source=BUNDLE/name
-        if source.is_file():shutil.copy2(source,ROOT/name)
-        elif source.is_dir():shutil.copytree(source,ROOT/name,dirs_exist_ok=True)
-    if not (ROOT/'config/author.json').exists() and (BUNDLE/'config').exists():shutil.copytree(BUNDLE/'config',ROOT/'config',dirs_exist_ok=True)
-    for name in ('logs','reports'):(ROOT/name).mkdir(exist_ok=True)
-    os.environ['PRESTIGE_DATA_DIR']=str(ROOT)
-    os.environ.setdefault('PRESTIGE_TOOLS_ROOT',str(TOOLS_ROOT))
-LABELS={'command':'Operacja','root':'Folder źródłowy','file':'Plik','input':'Dane wejściowe JSON','output':'Folder raportów',
-    'destination':'Miejsce docelowe','source':'Foldery źródłowe (po jednym w wierszu)','apply':'Wykonaj zmiany',
-    'collect':'Zbierz dane','dry_run':'Tylko plan, bez wykonania','support':'Wesprzyj autora','manifest':'Manifest',
-    'other':'Drugi plik lub folder','database':'Baza danych','archive':'Archiwum','target':'Adres docelowy',
-    'provider':'Tryb analizy AI','model':'Model AI','preview_send':'Podgląd wysyłanych metryk, bez wysyłania',
-    'backend':'Metoda obserwacji','count':'Liczba prób','cycles':'Liczba cykli','interval':'Odstęp (sekundy)',
-    'profile':'Profil','device':'Urządzenie ADB','package':'Pakiety (po jednym w wierszu)','plan':'Plik planu',
-    'quarantine':'Folder kwarantanny','before':'Stan przed','after':'Stan po','snapshot':'Plik migawki',
-    'authorized':'Mam uprawnienia do testowania wskazanej sieci','cidr':'Podsieć IPv4/CIDR','directory':'Folder raportów'}
+BG="#030914"; SIDE="#061321"; PANEL="#081b2d"; CARD="#0b2237"; CARD_H="#0e2b45"
+LINE="#123d5e"; BLUE="#00aaff"; CYAN="#59d7ff"; TEXT="#f5f9fc"; MUTED="#88a6bc"
+GOOD="#54dda5"; WARN="#ffc857"; BAD="#ff6b78"
+RISK={"safe":("Bezpieczne",GOOD),"changes_system":("Zmienia system",WARN),
+      "advanced":("Zaawansowane",WARN),"external_service":("Usługa zewnętrzna",CYAN)}
+ICONS={"Komputer i Windows":"▣","Sieć i Internet":"⌁","Android i ADB":"▱",
+       "Bezpieczeństwo":"◇","Pliki i dane":"▤","Kopie zapasowe":"◫",
+       "Diagnostyka":"◎","Narzędzia zaawansowane":"⌘"}
 
-def schema():
-    if (ROOT/'prestige.ps1').exists():
-        fields=[{'dest':'Command','option':'-Command','choices':['modules','collect','network-test','updates-check','repair','cleanup-scan','cleanup-preview','cleanup-clean','cleanup-restore','support'],'default':'modules'},
-            {'dest':'Modules','option':'-Modules','default':'all'}, {'dest':'Operation','option':'-Operation','choices':['sfc','dism-scan','dism-restore','flush-dns','winsock-reset','dhcp-renew'],'default':'dism-scan'}]
-        fields += [{'dest':name,'option':'-'+name,'default':''} for name in ('OutputDirectory','PlanPath','QuarantineDirectory','Gateway','InternetTarget','DnsName')]
-        fields += [{'dest':'Count','option':'-Count','default':4},
-            {'dest':'CleanupProfile','option':'-CleanupProfile','choices':['user-temp','windows-temp','directx-cache','recycle-bin'],'default':'user-temp'}]
-        fields += [{'dest':name,'option':'-'+name,'boolean':True,'default':False} for name in ('DryRun','Execute','AcceptNoRollback')]
-        return fields
-    import app
-    if not hasattr(app,'build'):return [{'dest':'arguments','option':None,'multiple':True,'default':''}]
-    fields=[]
-    for action in app.build()._actions:
-        if action.dest=='help':continue
-        fields.append({'dest':action.dest,'option':action.option_strings[-1] if action.option_strings else None,
-            'choices':list(action.choices) if action.choices is not None else None,'default':action.default,
-            'boolean':isinstance(action,(argparse._StoreTrueAction,argparse._StoreFalseAction)),
-            'multiple':isinstance(action,argparse._AppendAction) or action.nargs in ('*','+'),
-            'append':isinstance(action,argparse._AppendAction),'help':action.help or ''})
-    return fields
+class Scroll(tk.Frame):
+    def __init__(self,p):
+        super().__init__(p,bg=BG)
+        self.canvas=tk.Canvas(self,bg=BG,highlightthickness=0)
+        self.body=tk.Frame(self.canvas,bg=BG)
+        self.win=self.canvas.create_window((0,0),window=self.body,anchor="nw")
+        sb=tk.Scrollbar(self,command=self.canvas.yview)
+        self.body.bind("<Configure>",lambda e:self.canvas.configure(scrollregion=self.canvas.bbox("all")))
+        self.canvas.bind("<Configure>",lambda e:self.canvas.itemconfigure(self.win,width=e.width))
+        self.canvas.configure(yscrollcommand=sb.set)
+        self.canvas.pack(side="left",fill="both",expand=True); sb.pack(side="right",fill="y")
+        self.canvas.bind_all("<MouseWheel>",lambda e:self.canvas.yview_scroll(int(-e.delta/120),"units"))
 
-def arguments(fields,values):
-    positional=[];options=[]
-    for field in fields:
-        value=values.get(field['dest'],'');option=field.get('option')
-        if field.get('boolean'):
-            if value and option:options.append(option)
-            continue
-        if value is None or str(value).strip()=='':continue
-        values_list=str(value).splitlines() if field.get('multiple') else [str(value)]
-        if option and field.get('multiple') and not field.get('append'):
-            items=[item.strip() for item in values_list if item.strip()]
-            if items:options.extend([option,*items])
-            continue
-        for item in values_list:
-            if not item.strip():continue
-            if option:options.extend([option,item.strip()])
-            else:positional.append(item.strip())
-    return positional+options
+class Dashboard:
+    def __init__(self,root):
+        self.root=root; self.mm=ModuleManager()
+        self.q=tk.StringVar(); self.cat=tk.StringVar(value="Wszystkie"); self.status=tk.StringVar(value="System gotowy")
+        root.title("PRESTIGE TECH | Dashboard 1.1")
+        root.geometry("1500x920"); root.minsize(1120,720); root.configure(bg=BG)
+        self.make_sidebar()
+        self.page=Scroll(root); self.page.pack(side="left",fill="both",expand=True)
+        self.home()
 
-def backend_command(args):
-    if (ROOT/'prestige.ps1').exists():return ['pwsh','-NoProfile','-File',str(ROOT/'prestige.ps1'),*args]
-    if getattr(sys,'frozen',False):return [sys.executable,'--backend',*args]
-    return [sys.executable,str(ROOT/'app.py'),*args]
+    def make_sidebar(self):
+        s=self.sidebar=tk.Frame(self.root,bg=SIDE,width=238)
+        s.pack(side="left",fill="y"); s.pack_propagate(False)
+        brand=tk.Frame(s,bg=SIDE); brand.pack(fill="x",padx=22,pady=(26,28))
+        badge=tk.Frame(brand,bg="#08253b",highlightbackground=BLUE,highlightthickness=1,width=58,height=58)
+        badge.pack(anchor="w"); badge.pack_propagate(False)
+        tk.Label(badge,text="PT",bg="#08253b",fg=BLUE,font=("Segoe UI",22,"bold")).pack(expand=True)
+        tk.Label(brand,text="PRESTIGE TECH",bg=SIDE,fg=TEXT,font=("Segoe UI",13,"bold")).pack(anchor="w",pady=(11,0))
+        tk.Label(brand,text="WIĘCEJ NIŻ TECHNOLOGIA",bg=SIDE,fg=MUTED,font=("Segoe UI",8)).pack(anchor="w")
+        self.nav={}
+        items=[("⌂","Strona główna"),("◈","Moduły"),("✓","Zainstalowane"),("↻","Aktualizacje"),
+               ("⚙","Narzędzia systemowe"),("▤","Raporty"),("⚙","Ustawienia"),("?","Poradnik"),("i","O programie")]
+        for icon,name in items:
+            f=tk.Frame(s,bg=SIDE); f.pack(fill="x",padx=10,pady=1)
+            b=tk.Button(f,text=f"{icon}   {name}",anchor="w",relief="flat",bd=0,bg=SIDE,fg=MUTED,
+                        activebackground=PANEL,activeforeground=TEXT,padx=13,pady=10,font=("Segoe UI",10),
+                        command=(lambda n=name:self.navigate(n)))
+            b.pack(fill="x"); self.nav[name]=b
+        bottom=tk.Frame(s,bg="#071a2a",padx=15,pady=12); bottom.pack(side="bottom",fill="x",padx=12,pady=14)
+        tk.Label(bottom,text="●  Dashboard online",bg="#071a2a",fg=GOOD,font=("Segoe UI",9,"bold")).pack(anchor="w")
+        tk.Label(bottom,text="Prestige Tech Dashboard 1.1",bg="#071a2a",fg=MUTED,font=("Segoe UI",8)).pack(anchor="w",pady=(3,0))
 
+    def navigate(self,name):
+        for n,b in self.nav.items(): b.configure(bg=SIDE,fg=MUTED)
+        self.nav[name].configure(bg=PANEL,fg=TEXT)
+        if name=="Strona główna": self.home()
+        elif name=="Moduły": self.modules_page()
+        elif name=="Zainstalowane": self.modules_page(installed_only=True,title="Zainstalowane")
+        else: self.placeholder(name)
 
-class Window:
-    def __init__(self,window):
-        self.window=window;self.process=None;self.events=queue.Queue(maxsize=128);self.variables={};self.fields=schema();self.last_output='';self.output_truncated=False
-        metadata=json.loads((ROOT/'metadata.json').read_text(encoding='utf-8'))
-        window.title(metadata['name']+' | PRESTIGE TECH');window.geometry('1120x820');window.minsize(850,600)
-        style=ttk.Style();style.theme_use('clam')
-        style.configure('TFrame',background='#101b2b');style.configure('TLabel',background='#101b2b',foreground='#e5edf5',font=('Segoe UI',10))
-        style.configure('TCheckbutton',background='#101b2b',foreground='#e5edf5');style.map('TCheckbutton',background=[('active','#20334a')])
-        style.configure('TButton',padding=8,font=('Segoe UI',10));style.configure('Title.TLabel',font=('Segoe UI',22,'bold'),foreground='#4ee1b3')
-        outer=ttk.Frame(window,padding=20);outer.pack(fill='both',expand=True)
-        ttk.Label(outer,text='PRESTIGE TECH',style='Title.TLabel').pack(anchor='w')
-        ttk.Label(outer,text='by Dominik Wasilak   /   '+metadata['name']+'   /   '+metadata['version']).pack(anchor='w',pady=(0,12))
-        if 'termux' in ROOT.name:
-            ttk.Label(outer,text='Ten program wymaga środowiska Termux na Androidzie. Windows EXE nie zastępuje Termuxa.',wraplength=1000).pack(anchor='w',pady=5)
-        self.hub(outer)
-        tabs=ttk.Notebook(outer);tabs.pack(fill='both',expand=True)
-        form=ttk.Frame(tabs);result=ttk.Frame(tabs);tabs.add(form,text='Parametry operacji');tabs.add(result,text='Wynik i raport')
-        canvas=tk.Canvas(form,background='#101b2b',highlightthickness=0);scroll=ttk.Scrollbar(form,orient='vertical',command=canvas.yview)
-        canvas.configure(yscrollcommand=scroll.set);scroll.pack(side='right',fill='y');canvas.pack(side='left',fill='both',expand=True)
-        body=ttk.Frame(canvas,padding=12);panel=canvas.create_window((0,0),window=body,anchor='nw')
-        body.bind('<Configure>',lambda _:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda event:canvas.itemconfigure(panel,width=event.width))
-        body.columnconfigure(1,weight=1)
-        for index,field in enumerate(self.fields):
-            name=field['dest'];label=LABELS.get(name,name.replace('_',' '))
-            ttk.Label(body,text=label,wraplength=230).grid(row=index,column=0,sticky='nw',padx=(0,14),pady=7)
-            if field.get('boolean'):
-                variable=tk.BooleanVar(value=False);ttk.Checkbutton(body,variable=variable).grid(row=index,column=1,sticky='w')
-            else:
-                default=field.get('default');default='' if default is None or default==argparse.SUPPRESS else default
-                if isinstance(default,(list,tuple)):default='\n'.join(map(str,default))
-                variable=tk.StringVar(value=str(default))
-                if field.get('multiple'):
-                    widget=tk.Text(body,height=3,width=45);widget.insert('1.0',str(default));variable=widget
-                elif field.get('choices'):widget=ttk.Combobox(body,textvariable=variable,values=['']+list(map(str,field['choices'])),state='readonly')
-                else:widget=ttk.Entry(body,textvariable=variable)
-                widget.grid(row=index,column=1,sticky='ew',pady=5)
-                if not field.get('multiple') and any(word in name.lower() for word in ('file','root','input','output','directory','destination','manifest','archive','database','snapshot','plan','quarantine')):
-                    ttk.Button(body,text='Wybierz…',command=lambda v=variable,n=name:self.browse(v,n)).grid(row=index,column=2,padx=5)
-            self.variables[name]=variable
-        self.output=tk.Text(result,wrap='none',background='#0a1320',foreground='#e5edf5',insertbackground='white',font=('Consolas',10))
-        horizontal=ttk.Scrollbar(result,orient='horizontal',command=self.output.xview);horizontal.pack(side='bottom',fill='x')
-        vertical=ttk.Scrollbar(result,orient='vertical',command=self.output.yview);vertical.pack(side='right',fill='y')
-        self.output.configure(xscrollcommand=horizontal.set,yscrollcommand=vertical.set);self.output.pack(fill='both',expand=True)
-        self.service_form(tabs)
-        self.status=tk.StringVar(value='Gotowy. Wybierz operację i parametry.');ttk.Label(outer,textvariable=self.status).pack(anchor='w',pady=8)
-        buttons=ttk.Frame(outer);buttons.pack(fill='x')
-        ttk.Button(buttons,text='Pokaż polecenie',command=self.preview).pack(side='left',padx=3)
-        self.start=ttk.Button(buttons,text='Uruchom',command=lambda:self.run(tabs,result));self.start.pack(side='left',padx=3)
-        ttk.Button(buttons,text='Przerwij',command=self.stop).pack(side='left',padx=3)
-        ttk.Button(buttons,text='Zapisz wynik TXT',command=self.save).pack(side='right',padx=3)
-        ttk.Button(buttons,text='Eksport PDF',command=self.pdf).pack(side='right',padx=3)
-        if ROOT.name=='prestige-ai-diagnostic-assistant':ttk.Button(buttons,text='Klucz API na tę sesję',command=lambda:self.secret('OPENAI_API_KEY','Klucz OpenAI API')).pack(side='left',padx=3)
-        if (ROOT/'signing.py').exists() or ROOT.name in ('prestige-hash-checker','prestige-integrity-monitor'):
-            ttk.Button(buttons,text='Hasło klucza podpisu',command=lambda:self.secret('PRESTIGE_SIGNING_PASSWORD','Hasło szyfrowania klucza')).pack(side='left',padx=3)
-        window.protocol('WM_DELETE_WINDOW',self.close);window.after(100,self.poll)
+    def clear(self):
+        for x in self.page.body.winfo_children(): x.destroy()
 
-    def hub(self,parent):
-        if ROOT.name not in ('prestige-tech-dashboard','prestige-tech-cli'):return
-        frame=ttk.Frame(parent);frame.pack(fill='x',pady=(0,10))
-        candidates={path.stem:path for path in sorted(TOOLS_ROOT.glob('prestige-*.exe')) if path.stem!=ROOT.name}
-        candidates.update({path.name:path for path in sorted(TOOLS_ROOT.glob('prestige-*')) if path.is_dir() and path.name!=ROOT.name and (path/'gui.py').exists()})
-        choices=list(candidates)
-        selection=tk.StringVar(value=choices[0] if choices else '')
-        ttk.Combobox(frame,values=choices,textvariable=selection,state='readonly',width=55).pack(side='left')
-        def launch():
-            if selection.get() not in choices:return
-            target=candidates[selection.get()]
-            command=[str(target)] if target.suffix=='.exe' else [sys.executable,str(target/'gui.py')]
-            subprocess.Popen(command,cwd=target.parent if target.is_file() else target,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
-        ttk.Button(frame,text='Otwórz narzędzie',command=launch).pack(side='left',padx=8)
+    def button(self,p,text,cmd,primary=False):
+        return tk.Button(p,text=text,command=cmd,relief="flat",bd=0,
+                         bg=BLUE if primary else "#10314d",fg="#001522" if primary else TEXT,
+                         activebackground=CYAN,activeforeground="#001522",padx=14,pady=8,font=("Segoe UI",9,"bold"),
+                         cursor="hand2")
 
-    def service_form(self,tabs):
-        if ROOT.name!='prestige-repair-report':return
-        import app
-        page=ttk.Frame(tabs,padding=12);tabs.add(page,text='Zlecenie serwisowe');tabs.select(page)
-        canvas=tk.Canvas(page,background='#101b2b',highlightthickness=0);scroll=ttk.Scrollbar(page,orient='vertical',command=canvas.yview)
-        scroll.pack(side='right',fill='y');canvas.pack(fill='both',expand=True);canvas.configure(yscrollcommand=scroll.set)
-        body=ttk.Frame(canvas);panel=canvas.create_window((0,0),window=body,anchor='nw')
-        body.bind('<Configure>',lambda _:canvas.configure(scrollregion=canvas.bbox('all')));canvas.bind('<Configure>',lambda event:canvas.itemconfigure(panel,width=event.width));body.columnconfigure(1,weight=1)
-        values={};defaults=app.template()
-        for index,(key,label) in enumerate(app.LABELS.items()):
-            ttk.Label(body,text=label).grid(row=index,column=0,sticky='nw',pady=5,padx=(0,10))
-            widget=tk.Text(body,height=3 if key in ('zgloszony_problem','diagnoza','wykonane_czynnosci','zalecenia') else 1,width=45)
-            widget.insert('1.0','\n'.join(defaults[key]) if isinstance(defaults[key],list) else str(defaults[key]));widget.grid(row=index,column=1,sticky='ew',pady=5);values[key]=widget
-        def generate():
-            try:
-                record={key:widget.get('1.0','end-1c') for key,widget in values.items()}
-                record['czas_pracy_min']=float(record['czas_pracy_min']);record['czesci']=[line for line in record['czesci'].splitlines() if line.strip()]
-                record=app.validate(record)
-                directory=filedialog.askdirectory(title='Folder gotowego raportu')
-                if not directory:return
-                result=app.render(record,directory)
-                from pdf_export import export_pdf
-                pdf=Path(result['files'][0]).with_suffix('.pdf');export_pdf({app.LABELS[key]:value for key,value in record.items()},pdf,'Raport serwisowy')
-                self.status.set('Zapisano HTML, JSON, TXT i PDF: '+str(pdf))
-                messagebox.showinfo('Raport gotowy','Zapisano raport serwisowy w czterech formatach w wybranym folderze.')
-            except Exception as exc:messagebox.showerror('Nie można wygenerować raportu',str(exc))
-        ttk.Button(body,text='Wygeneruj raport HTML / JSON / TXT / PDF',command=generate).grid(row=len(values),column=0,columnspan=2,pady=15)
+    def home(self):
+        self.clear()
+        for n,b in self.nav.items(): b.configure(bg=SIDE,fg=MUTED)
+        self.nav["Strona główna"].configure(bg=PANEL,fg=TEXT)
+        b=self.page.body
 
-    def browse(self,variable,name):
-        folder=any(word in name.lower() for word in ('root','directory','destination','output','quarantine'))
-        value=filedialog.askdirectory() if folder else filedialog.askopenfilename()
-        if value:variable.set(value)
+        hero=tk.Frame(b,bg=PANEL,highlightbackground=LINE,highlightthickness=1)
+        hero.pack(fill="x",padx=28,pady=(28,16))
+        left=tk.Frame(hero,bg=PANEL,padx=30,pady=26); left.pack(side="left",fill="both",expand=True)
+        tk.Label(left,text="PRESTIGE TECH",bg=PANEL,fg=BLUE,font=("Segoe UI",30,"bold")).pack(anchor="w")
+        tk.Label(left,text="WIĘCEJ NIŻ TECHNOLOGIA",bg=PANEL,fg=TEXT,font=("Segoe UI",16,"bold")).pack(anchor="w")
+        tk.Label(left,text="TECH SOLUTIONS  •  PEOPLE IMPACT",bg=PANEL,fg=CYAN,font=("Segoe UI",9,"bold")).pack(anchor="w",pady=(4,14))
+        tk.Label(left,text="Twoje centrum diagnostyki i narzędzi serwisowych.\nInstaluj tylko to, czego potrzebujesz.",
+                 bg=PANEL,fg=MUTED,justify="left",font=("Segoe UI",11)).pack(anchor="w")
+        actions=tk.Frame(left,bg=PANEL); actions.pack(anchor="w",pady=(18,0))
+        self.button(actions,"Przeglądaj moduły",self.modules_page,True).pack(side="left")
+        self.button(actions,"Otwórz folder aplikacji",lambda:self.open(APP_DIR)).pack(side="left",padx=8)
 
-    def secret(self,name,title):
-        value=simpledialog.askstring(title,'Wartość pozostaje tylko w pamięci tej sesji. Nie zapisujemy jej w plikach ani raportach.',show='*',parent=self.window)
-        if value:
-            os.environ[name]=value;self.status.set('Ustawiono sekret dla tej sesji. Wartość jest ukryta.')
+        right=tk.Frame(hero,bg="#061625",width=300); right.pack(side="right",fill="y",padx=(0,1),pady=1); right.pack_propagate(False)
+        tk.Label(right,text="STATUS SYSTEMU",bg="#061625",fg=MUTED,font=("Segoe UI",9,"bold")).pack(anchor="w",padx=22,pady=(22,12))
+        installed=sum(self.mm.is_installed(m) for m in self.mm.modules)
+        for label,value,color in [("Dashboard","Gotowy",GOOD),("Moduły",f"{installed} / {len(self.mm.modules)}",BLUE),
+                                  ("Kanał","Stable",CYAN),("Katalog","LocalAppData",MUTED)]:
+            row=tk.Frame(right,bg="#061625"); row.pack(fill="x",padx=22,pady=5)
+            tk.Label(row,text=label,bg="#061625",fg=MUTED,font=("Segoe UI",9)).pack(side="left")
+            tk.Label(row,text=value,bg="#061625",fg=color,font=("Segoe UI",9,"bold")).pack(side="right")
 
-    def args(self):
-        values={name:value.get('1.0','end-1c') if isinstance(value,tk.Text) else value.get() for name,value in self.variables.items()}
-        return arguments(self.fields,values)
+        stats=tk.Frame(b,bg=BG); stats.pack(fill="x",padx=28,pady=(0,16))
+        vals=[("24","MODUŁY","Wszystkie narzędzia"),(str(installed),"ZAINSTALOWANE","Gotowe do uruchomienia"),
+              (str(len(self.mm.modules)-installed),"DOSTĘPNE","Możliwe do instalacji"),("SHA-256","WERYFIKACJA","Integralność modułów")]
+        for i,(num,title,sub) in enumerate(vals):
+            stats.columnconfigure(i,weight=1)
+            c=tk.Frame(stats,bg=CARD,highlightbackground=LINE,highlightthickness=1,padx=18,pady=14)
+            c.grid(row=0,column=i,sticky="nsew",padx=(0 if i==0 else 5,0))
+            tk.Label(c,text=num,bg=CARD,fg=BLUE,font=("Segoe UI",18,"bold")).pack(anchor="w")
+            tk.Label(c,text=title,bg=CARD,fg=TEXT,font=("Segoe UI",8,"bold")).pack(anchor="w")
+            tk.Label(c,text=sub,bg=CARD,fg=MUTED,font=("Segoe UI",8)).pack(anchor="w",pady=(3,0))
 
-    def preview(self):messagebox.showinfo('Polecenie',subprocess.list2cmdline(backend_command(self.args())))
+        sec=tk.Frame(b,bg=BG); sec.pack(fill="x",padx=28,pady=(4,8))
+        tk.Label(sec,text="Szybki start",bg=BG,fg=TEXT,font=("Segoe UI",18,"bold")).pack(side="left")
+        tk.Label(sec,text="Najczęściej używane narzędzia",bg=BG,fg=MUTED,font=("Segoe UI",9)).pack(side="left",padx=14,pady=(7,0))
+        quick=tk.Frame(b,bg=BG); quick.pack(fill="x",padx=28)
+        picks=["prestige-internet-diagnostic","prestige-system-snapshot","prestige-security-check"]
+        for i,mid in enumerate(picks):
+            m=next(x for x in self.mm.modules if x.id==mid); quick.columnconfigure(i,weight=1)
+            self.card(quick,m,0,i,compact=True)
 
-    def run(self,tabs,result):
-        if self.process is not None:return
-        args=self.args()
-        if '--provider' in args and args[args.index('--provider')+1]=='openai' and '--preview-send' not in args and '--dry-run' not in args:
-            if not messagebox.askyesno('Zewnętrzne AI','Wybrane metryki zostaną wysłane do OpenAI. Obowiązują warunki i opłaty konta API. Kontynuować?'):return
-        self.output.delete('1.0','end');self.last_output='';self.output_truncated=False;self.start.configure(state='disabled');self.status.set('Uruchamianie…');tabs.select(result)
-        try:
-            self.process=subprocess.Popen(backend_command(args),cwd=ROOT,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,text=True,encoding='utf-8',errors='replace',creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0),start_new_session=os.name!='nt')
-        except OSError as exc:
-            self.start.configure(state='normal');self.status.set('Nie można uruchomić programu');messagebox.showerror('Brak backendu',str(exc));return
-        process=self.process
-        def read():
-            decoder=codecs.getincrementaldecoder('utf-8')(errors='replace')
-            try:
-                while True:
-                    chunk=os.read(process.stdout.fileno(),4096)
-                    if not chunk:break
-                    self.events.put(('text',decoder.decode(chunk)))
-                tail=decoder.decode(b'',final=True)
-                if tail:self.events.put(('text',tail))
-            finally:
-                process.stdout.close()
-                self.events.put(('exit',process.wait()))
-        threading.Thread(target=read,daemon=True).start()
+        tk.Label(b,text="Wszystkie kategorie",bg=BG,fg=TEXT,font=("Segoe UI",18,"bold")).pack(anchor="w",padx=28,pady=(24,10))
+        cats=tk.Frame(b,bg=BG); cats.pack(fill="x",padx=28,pady=(0,28))
+        categories=self.mm.categories()
+        for i,cat in enumerate(categories):
+            cats.columnconfigure(i%4,weight=1,uniform="cat")
+            f=tk.Frame(cats,bg=CARD,highlightbackground=LINE,highlightthickness=1,padx=16,pady=13,cursor="hand2")
+            f.grid(row=i//4,column=i%4,sticky="nsew",padx=4,pady=4)
+            count=sum(1 for m in self.mm.modules if m.category==cat)
+            tk.Label(f,text=ICONS.get(cat,"◈"),bg=CARD,fg=BLUE,font=("Segoe UI Symbol",20,"bold")).pack(anchor="w")
+            tk.Label(f,text=cat,bg=CARD,fg=TEXT,font=("Segoe UI",10,"bold")).pack(anchor="w",pady=(5,1))
+            tk.Label(f,text=f"{count} modułów",bg=CARD,fg=MUTED,font=("Segoe UI",8)).pack(anchor="w")
+            for w in (f,*f.winfo_children()):
+                w.bind("<Button-1>",lambda e,c=cat:self.modules_page(category=c))
 
-    def poll(self):
-        chunks=[];exit_code=None
-        for _ in range(64):
-            try:kind,value=self.events.get_nowait()
-            except queue.Empty:break
-            if kind=='text':
-                chunks.append(value)
-            else:
-                exit_code=value
-        if chunks:
-            value=''.join(chunks);self.last_output+=value
-            if len(self.last_output)>MAX_OUTPUT:
-                self.last_output=self.last_output[-MAX_OUTPUT:];self.output.delete('1.0','end');self.output.insert('end',self.last_output);self.output_truncated=True
-            else:self.output.insert('end',value)
-            self.output.see('end')
-        if exit_code is not None:
-            self.process=None;self.start.configure(state='normal');self.status.set('Zakończono pomyślnie' if exit_code==0 else 'Zakończono z kodem '+str(exit_code)+' — sprawdź wynik')
-            if self.output_truncated:self.status.set(self.status.get()+' | Tylko ostatnie 65536 znaków. Pełny raport zapisz opcją backendu.')
-        self.window.after(100,self.poll)
+    def modules_page(self,installed_only=False,title="Moduły",category=None):
+        self.clear()
+        for n,b in self.nav.items(): b.configure(bg=SIDE,fg=MUTED)
+        active="Zainstalowane" if installed_only else "Moduły"; self.nav[active].configure(bg=PANEL,fg=TEXT)
+        b=self.page.body
+        head=tk.Frame(b,bg=BG); head.pack(fill="x",padx=28,pady=(28,14))
+        tk.Label(head,text=title,bg=BG,fg=TEXT,font=("Segoe UI",24,"bold")).pack(anchor="w")
+        tk.Label(head,text="Wybierz narzędzie. Dashboard instaluje moduły osobno, więc aplikacja pozostaje lekka.",
+                 bg=BG,fg=MUTED,font=("Segoe UI",10)).pack(anchor="w",pady=(4,0))
+        tools=tk.Frame(b,bg=BG); tools.pack(fill="x",padx=28,pady=(4,14))
+        search=tk.Frame(tools,bg=CARD,highlightbackground=LINE,highlightthickness=1)
+        search.pack(side="left",fill="x",expand=True)
+        tk.Label(search,text="⌕",bg=CARD,fg=BLUE,font=("Segoe UI Symbol",16)).pack(side="left",padx=(12,6))
+        e=tk.Entry(search,textvariable=self.q,bg=CARD,fg=TEXT,insertbackground=TEXT,relief="flat",bd=0,font=("Segoe UI",11))
+        e.pack(side="left",fill="x",expand=True,ipady=10); e.bind("<KeyRelease>",lambda e:self.render_modules(installed_only))
+        cats=["Wszystkie"]+self.mm.categories()
+        if category: self.cat.set(category)
+        om=tk.OptionMenu(tools,self.cat,*cats,command=lambda x:self.render_modules(installed_only))
+        om.configure(bg=CARD,fg=TEXT,activebackground=CARD_H,activeforeground=TEXT,relief="flat",highlightthickness=0,padx=10)
+        om["menu"].configure(bg=CARD,fg=TEXT); om.pack(side="left",padx=(10,0),ipady=4)
+        row=tk.Frame(b,bg=BG); row.pack(fill="x",padx=28)
+        self.module_count=tk.Label(row,bg=BG,fg=MUTED,font=("Segoe UI",9)); self.module_count.pack(side="right")
+        self.cards=tk.Frame(b,bg=BG); self.cards.pack(fill="both",expand=True,padx=24,pady=(5,28))
+        self.render_modules(installed_only)
 
-    def stop(self):
-        if self.process and self.process.poll() is None:
-            try:
-                if os.name=='nt':
-                    stopped=subprocess.run(['taskkill','/PID',str(self.process.pid),'/T','/F'],capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW,timeout=5)
-                    if stopped.returncode and self.process.poll() is None:raise OSError('Nie udało się zatrzymać procesu.')
-                else:
-                    import signal
-                    os.killpg(self.process.pid,signal.SIGTERM)
-            except (OSError,subprocess.TimeoutExpired) as exc:
-                if self.process.poll() is None:
-                    self.status.set('Przerwanie nie powiodło się: '+str(exc));return False
-            self.status.set('Przerwano proces. Sprawdź plan/kopię operacji przed ponownym uruchomieniem.')
-        return True
+    def render_modules(self,installed_only=False):
+        for x in self.cards.winfo_children(): x.destroy()
+        q=self.q.get().lower().strip(); cat=self.cat.get()
+        items=[m for m in self.mm.modules if (cat=="Wszystkie" or m.category==cat) and
+               (not q or q in (m.name+" "+m.description+" "+m.category).lower()) and
+               (not installed_only or self.mm.is_installed(m))]
+        self.module_count.config(text=f"{len(items)} modułów")
+        for c in range(3): self.cards.columnconfigure(c,weight=1,uniform="c")
+        for i,m in enumerate(items): self.card(self.cards,m,i//3,i%3)
 
-    def close(self):
-        if self.process and self.process.poll() is None:
-            if not messagebox.askyesno('Operacja trwa','Zamknąć okno i przerwać uruchomiony proces?'):return
-            if self.stop() is False:return
-        self.window.destroy()
+    def card(self,parent,m,r,c,compact=False):
+        f=tk.Frame(parent,bg=CARD,highlightbackground=LINE,highlightthickness=1,padx=18,pady=16)
+        f.grid(row=r,column=c,sticky="nsew",padx=5,pady=5)
+        top=tk.Frame(f,bg=CARD); top.pack(fill="x")
+        tk.Label(top,text=ICONS.get(m.category,"◈"),bg=CARD,fg=BLUE,font=("Segoe UI Symbol",22,"bold")).pack(side="left")
+        label,color=RISK.get(m.risk,("Informacja",MUTED))
+        tk.Label(top,text="● "+label,bg=CARD,fg=color,font=("Segoe UI",8,"bold")).pack(side="right")
+        tk.Label(f,text=m.name,bg=CARD,fg=TEXT,font=("Segoe UI",12,"bold")).pack(anchor="w",pady=(10,2))
+        tk.Label(f,text=m.category.upper(),bg=CARD,fg=CYAN,font=("Segoe UI",8,"bold")).pack(anchor="w")
+        tk.Label(f,text=m.description,bg=CARD,fg=MUTED,justify="left",wraplength=320,font=("Segoe UI",9)).pack(anchor="w",pady=(9,10))
+        installed=self.mm.is_installed(m)
+        tk.Label(f,text=("● Zainstalowano" if installed else "○ Dostępny do instalacji")+f"   v{m.version}",
+                 bg=CARD,fg=GOOD if installed else MUTED,font=("Segoe UI",8)).pack(anchor="w",pady=(0,10))
+        a=tk.Frame(f,bg=CARD); a.pack(fill="x")
+        if installed:
+            self.button(a,"Uruchom",lambda:self.run(m),True).pack(side="left")
+            if not compact:self.button(a,"Usuń",lambda:self.uninstall(m)).pack(side="left",padx=6)
+        else:self.button(a,"Zainstaluj",lambda:self.install(m),True).pack(side="left")
+        self.button(a,"Jak użyć?",lambda:self.help(m)).pack(side="right")
 
-    def save(self):
-        path=filedialog.asksaveasfilename(defaultextension='.txt')
-        if path:Path(path).write_text(self.last_output,encoding='utf-8')
+    def install(self,m):
+        roots=[Path.cwd(),Path.cwd().parent]
+        p=self.mm.find_local(m,roots)
+        if p and messagebox.askyesno("Znaleziono moduł",f"Znaleziono lokalny moduł:\n\n{p}\n\nZainstalować go w Prestige Tech?"):
+            try:self.mm.install_file(m,p); self.status.set("Zainstalowano: "+m.name); self.modules_page()
+            except Exception as e:messagebox.showerror("Błąd instalacji",str(e))
+            return
+        p=filedialog.askopenfilename(title="Wskaż "+m.executable,filetypes=[("Program Windows","*.exe")])
+        if p:
+            try:self.mm.install_file(m,p); self.modules_page()
+            except Exception as e:messagebox.showerror("Błąd instalacji",str(e))
 
-    def pdf(self):
-        path=filedialog.asksaveasfilename(defaultextension='.pdf')
-        if not path:return
-        try:
-            from pdf_export import export_pdf
-            export_pdf({'wynik':self.last_output},path,title=self.window.title())
-            self.status.set('Zapisano PDF: '+path)
-        except Exception as exc:messagebox.showerror('Eksport PDF',str(exc))
+    def run(self,m):
+        if m.risk=="changes_system" and not messagebox.askyesno("Potwierdzenie",m.name+" może zmieniać ustawienia systemu.\n\nUruchomić moduł?"):return
+        try:self.mm.launch(m)
+        except Exception as e:messagebox.showerror("Nie można uruchomić",str(e))
 
+    def uninstall(self,m):
+        if messagebox.askyesno("Odinstalowanie","Usunąć moduł "+m.name+" z Dashboardu?"):
+            try:self.mm.uninstall(m); self.modules_page()
+            except Exception as e:messagebox.showerror("Błąd",str(e))
+
+    def help(self,m):
+        req="\n".join("• "+x for x in m.requirements) or "• Brak dodatkowych wymagań"
+        messagebox.showinfo("Jak użyć? | "+m.name,
+            f"{m.name}\n\n{m.description}\n\nWymagania:\n{req}\n\n"
+            "Krok po kroku:\n1. Kliknij Zainstaluj.\n2. Dashboard znajdzie lokalny moduł lub poprosi o wskazanie EXE.\n"
+            "3. Po instalacji kliknij Uruchom.\n4. Przeczytaj komunikaty modułu przed zatwierdzeniem zmian.\n\n"
+            "Jeśli coś nie działa, sprawdź wymagania powyżej.")
+
+    def placeholder(self,name):
+        self.clear(); b=self.page.body
+        tk.Label(b,text=name,bg=BG,fg=TEXT,font=("Segoe UI",25,"bold")).pack(anchor="w",padx=30,pady=(35,8))
+        tk.Label(b,text="Ta sekcja zostanie podłączona w następnym etapie Dashboardu 1.x.",
+                 bg=BG,fg=MUTED,font=("Segoe UI",11)).pack(anchor="w",padx=30)
+
+    @staticmethod
+    def open(p):
+        Path(p).mkdir(parents=True,exist_ok=True)
+        if os.name=="nt":os.startfile(p)
 
 def main():
-    if '--backend' in sys.argv:
-        if (ROOT/'prestige.ps1').exists():raise SystemExit(subprocess.run(backend_command(sys.argv[sys.argv.index('--backend')+1:])).returncode)
-        sys.argv=[str(ROOT/'app.py'),*sys.argv[sys.argv.index('--backend')+1:]]
-        runpy.run_module('app',run_name='__main__');return
-    if '--schema' in sys.argv:print(json.dumps(schema(),ensure_ascii=False,default=str));return
-    if os.name=='nt' and getattr(sys,'frozen',False):
-        import ctypes
-        handle=ctypes.windll.kernel32.GetConsoleWindow()
-        if handle:ctypes.windll.user32.ShowWindow(handle,0)
-    window=tk.Tk()
-    if '--smoke' in sys.argv:window.withdraw()
-    Window(window)
-    if '--smoke' in sys.argv:window.after(400,window.destroy)
-    window.mainloop()
+    root=tk.Tk(); Dashboard(root); root.mainloop()
+if __name__=="__main__":main()
 
-
-if __name__=='__main__':main()

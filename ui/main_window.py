@@ -13,14 +13,13 @@ from module_manager import LOGS_DIR, MODULES_DIR, ModuleManager
 from .theme import *
 from .sidebar import Sidebar
 from .home_page import HomePage
-from .modules_page import ModulesPage
-from .installed_page import InstalledPage
+from .modules_unified_page import ModulesUnifiedPage
 from .updates_page import UpdatesPage
-from .system_tools_page import SystemToolsPage
-from .reports_page import ReportsPage
+from .system_tools_report_page import SystemToolsReportPage
+from .reports_enhanced_page import ReportsEnhancedPage
 from .settings_page import SettingsPage
 from .settings_store import load_settings
-from .guide_page import GuidePage
+from .guide_extra_topics import GuidePage
 from .widgets import label
 from .icon_manager import IconManager
 
@@ -67,6 +66,14 @@ class MainWindow(QMainWindow):
         body_layout.setSpacing(0)
 
         self.sidebar = Sidebar()
+        for _sidebar_button in list(self.sidebar.findChildren(QPushButton)):
+            try:
+                _sidebar_text = _sidebar_button.text().strip()
+            except Exception:
+                continue
+            if _sidebar_text == "Zainstalowane":
+                _sidebar_button.setVisible(False)
+                _sidebar_button.setEnabled(False)
         self.sidebar.page_requested.connect(self.navigate)
         body_layout.addWidget(self.sidebar)
 
@@ -136,11 +143,10 @@ class MainWindow(QMainWindow):
         outer.addWidget(footer)
 
         self.home = HomePage(self.mm)
-        self.modules = ModulesPage(self.mm)
-        self.installed = InstalledPage(self.mm)
+        self.modules = ModulesUnifiedPage(self.mm)
         self.updates = UpdatesPage(self.mm)
-        self.system_tools = SystemToolsPage(self.mm)
-        self.reports = ReportsPage()
+        self.system_tools = SystemToolsReportPage(self.mm)
+        self.reports = ReportsEnhancedPage()
         self.settings = SettingsPage()
         self.guide = GuidePage()
         self.about = AboutPage(len(self.mm.modules))
@@ -148,7 +154,6 @@ class MainWindow(QMainWindow):
 
         self.home_view = self.wrap(self.home)
         self.modules_view = self.wrap(self.modules)
-        self.installed_view = self.wrap(self.installed)
         self.updates_view = self.wrap(self.updates)
         self.system_tools_view = self.wrap(self.system_tools)
         self.reports_view = self.wrap(self.reports)
@@ -160,7 +165,6 @@ class MainWindow(QMainWindow):
         for view in (
             self.home_view,
             self.modules_view,
-            self.installed_view,
             self.updates_view,
             self.system_tools_view,
             self.reports_view,
@@ -174,7 +178,6 @@ class MainWindow(QMainWindow):
         for page in (
             self.home,
             self.modules,
-            self.installed,
         ):
             self._wire(page)
 
@@ -190,10 +193,6 @@ class MainWindow(QMainWindow):
         self.modules.icon_requested.connect(
             self.choose_icon
         )
-        self.installed.icon_requested.connect(
-            self.choose_icon
-        )
-
         self.home.modules_requested.connect(
             lambda: self.navigate("Moduły")
         )
@@ -241,6 +240,8 @@ class MainWindow(QMainWindow):
         )
 
     def navigate(self, name):
+        if name == "Zainstalowane":
+            name = "Moduły"
         self.sidebar.set_active(name)
         if name == "Wsparcie":
             self.stack.setCurrentWidget(self.support_view)
@@ -263,14 +264,6 @@ class MainWindow(QMainWindow):
                 self.modules_view
             )
             return
-
-        if name == "Zainstalowane":
-            self.installed.render()
-            self.stack.setCurrentWidget(
-                self.installed_view
-            )
-            return
-
         if name == "Aktualizacje":
             self.updates.render()
             self.stack.setCurrentWidget(
@@ -872,5 +865,3 @@ class MainWindow(QMainWindow):
         self,
     ):
         self.modules.render()
-        self.installed.render()
-

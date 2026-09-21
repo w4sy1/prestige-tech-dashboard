@@ -1,0 +1,369 @@
+﻿{
+    "schema_version":  1,
+    "channel":  "stable",
+    "modules":  [
+                    {
+                        "id":  "prestige-windows-toolkit",
+                        "name":  "Diagnostyka Windows",
+                        "category":  "Komputer i Windows",
+                        "version":  "0.3.1",
+                        "description":  "Diagnostyka i narzędzia naprawcze Windows.",
+                        "executable":  "prestige-windows-toolkit.exe",
+                        "requirements":  [
+                                             "Windows 10 lub 11"
+                                         ],
+                        "risk":  "changes_system",
+                        "help":  "Diagnostyka i narzędzia naprawcze Windows. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-system-snapshot",
+                        "name":  "Migawka systemu",
+                        "category":  "Komputer i Windows",
+                        "version":  "0.3.1",
+                        "description":  "Zbiera informacje o komputerze i systemie.",
+                        "executable":  "prestige-system-snapshot.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Zbiera informacje o komputerze i systemie. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-pc-cleanup",
+                        "name":  "Czyszczenie komputera",
+                        "category":  "Komputer i Windows",
+                        "version":  "0.3.1",
+                        "description":  "Analizuje pliki tymczasowe i pomaga bezpiecznie sprzątać system.",
+                        "executable":  "prestige-pc-cleanup.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "changes_system",
+                        "help":  "Analizuje pliki tymczasowe i pomaga bezpiecznie sprzątać system. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-internet-diagnostic",
+                        "name":  "Diagnostyka Internetu",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Sprawdza łączność, DNS i podstawowe problemy z Internetem.",
+                        "executable":  "prestige-internet-diagnostic.exe",
+                        "requirements":  [
+                                             "Połączenie sieciowe"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Sprawdza łączność, DNS i podstawowe problemy z Internetem. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-dns-benchmark",
+                        "name":  "Test serwerów DNS",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.2",
+                        "description":  "Porównuje czas odpowiedzi serwerów DNS.",
+                        "executable":  "prestige-dns-benchmark.exe",
+                        "requirements":  [
+                                             "Połączenie sieciowe"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Porównuje czas odpowiedzi serwerów DNS. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-network-optimizer",
+                        "name":  "Optymalizacja sieci",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Analizuje i opcjonalnie zmienia ustawienia sieciowe Windows.",
+                        "executable":  "prestige-network-optimizer.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "changes_system",
+                        "help":  "Analizuje i opcjonalnie zmienia ustawienia sieciowe Windows. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-nmap-profiles",
+                        "name":  "Profile Nmap",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Gotowe profile diagnostyczne Nmap dla autoryzowanych sieci.",
+                        "executable":  "prestige-nmap-profiles.exe",
+                        "requirements":  [
+                                             "Nmap"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Gotowe profile diagnostyczne Nmap dla autoryzowanych sieci. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-netradar",
+                        "name":  "NetRadar",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Monitoring urządzeń i zmian w sieci.",
+                        "executable":  "prestige-netradar.exe",
+                        "requirements":  [
+                                             "Połączenie sieciowe"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Monitoring urządzeń i zmian w sieci. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-lan-radar",
+                        "name":  "Radar LAN",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Wykrywa aktywne urządzenia w sieci lokalnej.",
+                        "executable":  "prestige-lan-radar.exe",
+                        "requirements":  [
+                                             "Sieć LAN"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Wykrywa aktywne urządzenia w sieci lokalnej. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-network-snapshot",
+                        "name":  "Migawka sieci",
+                        "category":  "Sieć i Internet",
+                        "version":  "0.3.1",
+                        "description":  "Zapisuje stan konfiguracji sieci do późniejszego porównania.",
+                        "executable":  "prestige-network-snapshot.exe",
+                        "requirements":  [
+                                             "Połączenie sieciowe"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Zapisuje stan konfiguracji sieci do późniejszego porównania. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-adb-diagnostic",
+                        "name":  "Diagnostyka ADB",
+                        "category":  "Android i ADB",
+                        "version":  "0.3.1",
+                        "description":  "Diagnostyka telefonu przez Android Debug Bridge.",
+                        "executable":  "prestige-adb-diagnostic.exe",
+                        "requirements":  [
+                                             "ADB",
+                                             "Debugowanie USB"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Diagnostyka telefonu przez Android Debug Bridge. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-android-inspector",
+                        "name":  "Inspektor Androida",
+                        "category":  "Android i ADB",
+                        "version":  "0.3.1",
+                        "description":  "Zbiera informacje diagnostyczne o urządzeniu Android.",
+                        "executable":  "prestige-android-inspector.exe",
+                        "requirements":  [
+                                             "ADB"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Zbiera informacje diagnostyczne o urządzeniu Android. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-security-check",
+                        "name":  "Kontrola bezpieczeństwa",
+                        "category":  "Bezpieczeństwo",
+                        "version":  "0.3.1",
+                        "description":  "Podstawowy audyt stanu bezpieczeństwa komputera.",
+                        "executable":  "prestige-security-check.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Podstawowy audyt stanu bezpieczeństwa komputera. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-malware-triage",
+                        "name":  "Wstępna analiza malware",
+                        "category":  "Bezpieczeństwo",
+                        "version":  "0.3.1",
+                        "description":  "Wstępna analiza symptomów infekcji i podejrzanych elementów.",
+                        "executable":  "prestige-malware-triage.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Wstępna analiza symptomów infekcji i podejrzanych elementów. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-file-inspector",
+                        "name":  "Inspektor plików",
+                        "category":  "Pliki i dane",
+                        "version":  "0.3.1",
+                        "description":  "Analizuje metadane i właściwości wskazanych plików.",
+                        "executable":  "prestige-file-inspector.exe",
+                        "requirements":  [
+
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Analizuje metadane i właściwości wskazanych plików. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-hash-checker",
+                        "name":  "Sprawdzanie sum kontrolnych",
+                        "category":  "Pliki i dane",
+                        "version":  "0.3.1",
+                        "description":  "Oblicza i porównuje sumy SHA plików.",
+                        "executable":  "prestige-hash-checker.exe",
+                        "requirements":  [
+
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Oblicza i porównuje sumy SHA plików. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-integrity-monitor",
+                        "name":  "Monitor integralności",
+                        "category":  "Pliki i dane",
+                        "version":  "0.3.1",
+                        "description":  "Wykrywa zmiany plików względem zapisanego stanu.",
+                        "executable":  "prestige-integrity-monitor.exe",
+                        "requirements":  [
+
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Wykrywa zmiany plików względem zapisanego stanu. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-folder-watch",
+                        "name":  "Obserwacja folderu",
+                        "category":  "Pliki i dane",
+                        "version":  "0.3.1",
+                        "description":  "Śledzi zmiany w wybranym folderze.",
+                        "executable":  "prestige-folder-watch.exe",
+                        "requirements":  [
+
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Śledzi zmiany w wybranym folderze. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-backup",
+                        "name":  "Kopie zapasowe",
+                        "category":  "Kopie zapasowe",
+                        "version":  "0.3.1",
+                        "description":  "Tworzy kopie wskazanych danych.",
+                        "executable":  "prestige-backup.exe",
+                        "requirements":  [
+                                             "Wolne miejsce na dysku"
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Tworzy kopie wskazanych danych. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-repair-report",
+                        "name":  "Raport serwisowy",
+                        "category":  "Diagnostyka",
+                        "version":  "0.3.1",
+                        "description":  "Tworzy raport z diagnozy i wykonanej usługi.",
+                        "executable":  "prestige-repair-report.exe",
+                        "requirements":  [
+
+                                         ],
+                        "risk":  "safe",
+                        "help":  "Tworzy raport z diagnozy i wykonanej usługi. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-usb-toolkit",
+                        "name":  "Narzędzia USB",
+                        "category":  "Narzędzia zaawansowane",
+                        "version":  "0.3.1",
+                        "description":  "Zestaw narzędzi do diagnostyki urządzeń USB.",
+                        "executable":  "prestige-usb-toolkit.exe",
+                        "requirements":  [
+                                             "Windows"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Zestaw narzędzi do diagnostyki urządzeń USB. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-termux-setup",
+                        "name":  "Konfiguracja Termux",
+                        "category":  "Narzędzia zaawansowane",
+                        "version":  "0.3.1",
+                        "description":  "Pomaga przygotować środowisko Termux na Androidzie.",
+                        "executable":  "prestige-termux-setup.exe",
+                        "requirements":  [
+                                             "Android",
+                                             "Termux"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Pomaga przygotować środowisko Termux na Androidzie. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-termux-toolkit",
+                        "name":  "Termux Toolkit",
+                        "category":  "Narzędzia zaawansowane",
+                        "version":  "0.3.1",
+                        "description":  "Zestaw narzędzi pomocniczych dla Termuxa.",
+                        "executable":  "prestige-termux-toolkit.exe",
+                        "requirements":  [
+                                             "Android",
+                                             "Termux"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Zestaw narzędzi pomocniczych dla Termuxa. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-ai-diagnostic-assistant",
+                        "name":  "AI Diagnostic Assistant",
+                        "category":  "Diagnostyka",
+                        "version":  "0.3.1",
+                        "description":  "Pomocnicza analiza danych diagnostycznych z użyciem AI.",
+                        "executable":  "prestige-ai-diagnostic-assistant.exe",
+                        "requirements":  [
+                                             "Opcjonalnie klucz API"
+                                         ],
+                        "risk":  "external_service",
+                        "help":  "Pomocnicza analiza danych diagnostycznych z użyciem AI. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    }
+                ]
+}

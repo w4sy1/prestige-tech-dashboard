@@ -41,3 +41,13 @@ dashboard-pyside-backup/
 .dashboard-*-backup/
 dashboard-stage*-failed/
 # --- end Prestige Tech local build artifacts ---
+
+dashboard-*-backup-*/
+dashboard-pre-*-backup-*/
+dashboard-system-tools*-backup-*/
+dashboard-stage*-failed*/
+dashboard-stage*-safety-*/
+installer/payload/
+stage23b-audit.txt
+__pycache__/
+*.pyc
