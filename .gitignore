@@ -14,3 +14,30 @@ reports/*
 build/
 dist/
 .venv/
+
+# --- Prestige Tech local build artifacts ---
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+*.bak
+
+# PyInstaller / build outputs
+build/
+dist/
+*.spec
+release-v*/
+release-stage/
+dist-installer/
+
+# Local updater / installer outputs
+self-update*/
+installer-self-update*/
+installer-output/
+
+# Local historical backups
+dashboard-*-backup/
+dashboard-pyside-backup/
+.dashboard-*-backup/
+dashboard-stage*-failed/
+# --- end Prestige Tech local build artifacts ---
