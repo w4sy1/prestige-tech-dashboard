@@ -51,3 +51,9 @@ installer/payload/
 stage23b-audit.txt
 __pycache__/
 *.pyc
+
+dashboard-stage15-fix.py
+dashboard-stage15-patch.py
+dashboard-stage16-patch-system-tools.py
+dashboard-v1-setup.ps1
+e with Prestige Tech Free Use License*
