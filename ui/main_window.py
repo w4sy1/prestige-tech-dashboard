@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         fl = QHBoxLayout(footer)
         fl.setContentsMargins(12, 0, 14, 0)
 
-        ok = QLabel("✓")
+        ok = QLabel("âś“")
         ok.setAlignment(Qt.AlignCenter)
         ok.setFixedSize(34, 34)
         ok.setStyleSheet(
@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
         left_text.addWidget(label("System gotowy", 9, TEXT, True))
         left_text.addWidget(
             label(
-                "Wszystkie funkcje działają poprawnie",
+                "Wszystkie funkcje dziaĹ‚ajÄ… poprawnie",
                 7,
                 MUTED,
             )
@@ -114,7 +114,7 @@ class MainWindow(QMainWindow):
         fl.addStretch()
         fl.addWidget(
             label(
-                "„Wiedza, narzędzia, działanie - realna zmiana.”",
+                "â€žWiedza, narzÄ™dzia, dziaĹ‚anie - realna zmiana.â€ť",
                 9,
                 TEXT,
             )
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
         fl.addStretch()
         fl.addWidget(
             label(
-                "☼   ◐     PL  🇵🇱     ⚙",
+                "âĽ   â—     PL  đź‡µđź‡±     âš™",
                 9,
                 TEXT,
             )
@@ -194,7 +194,7 @@ class MainWindow(QMainWindow):
             self.choose_icon
         )
         self.home.modules_requested.connect(
-            lambda: self.navigate("Moduły")
+            lambda: self.navigate("ModuĹ‚y")
         )
         self.home.guide_requested.connect(
             lambda: self.navigate("Poradnik")
@@ -214,7 +214,7 @@ class MainWindow(QMainWindow):
         self.about.support_requested.connect(lambda: self.navigate("Wsparcie"))
         self.support.guide_requested.connect(lambda: self.navigate("Poradnik"))
 
-        self.navigate("Strona główna")
+        self.navigate("Strona gĹ‚Ăłwna")
 
     def wrap(self, widget):
         area = QScrollArea()
@@ -241,7 +241,7 @@ class MainWindow(QMainWindow):
 
     def navigate(self, name):
         if name == "Zainstalowane":
-            name = "Moduły"
+            name = "ModuĹ‚y"
         self.sidebar.set_active(name)
         if name == "Wsparcie":
             self.stack.setCurrentWidget(self.support_view)
@@ -252,13 +252,13 @@ class MainWindow(QMainWindow):
             return
 
 
-        if name == "Strona główna":
+        if name == "Strona gĹ‚Ăłwna":
             self.stack.setCurrentWidget(
                 self.home_view
             )
             return
 
-        if name == "Moduły":
+        if name == "ModuĹ‚y":
             self.modules.render()
             self.stack.setCurrentWidget(
                 self.modules_view
@@ -271,7 +271,7 @@ class MainWindow(QMainWindow):
             )
             return
 
-        if name == "Narzędzia systemowe":
+        if name == "NarzÄ™dzia systemowe":
             self.system_tools.render()
             self.stack.setCurrentWidget(
                 self.system_tools_view
@@ -314,7 +314,7 @@ class MainWindow(QMainWindow):
             )
             layout.addWidget(
                 label(
-                    "Sekcja będzie rozwijana w kolejnej iteracji.",
+                    "Sekcja bÄ™dzie rozwijana w kolejnej iteracji.",
                     9,
                     MUTED,
                 )
@@ -340,7 +340,7 @@ class MainWindow(QMainWindow):
 
     def filter_home(self, value):
         self.navigate(
-            "Moduły"
+            "ModuĹ‚y"
         )
 
         if value.startswith(
@@ -419,16 +419,16 @@ class MainWindow(QMainWindow):
             )
 
             box.setText(
-                "Ten moduł ma własną ikonę.\n\nCo chcesz zrobić?"
+                "Ten moduĹ‚ ma wĹ‚asnÄ… ikonÄ™.\n\nCo chcesz zrobiÄ‡?"
             )
 
             change = box.addButton(
-                "Zmień ikonę",
+                "ZmieĹ„ ikonÄ™",
                 QMessageBox.AcceptRole,
             )
 
             reset = box.addButton(
-                "Przywróć domyślną",
+                "PrzywrĂłÄ‡ domyĹ›lnÄ…",
                 QMessageBox.DestructiveRole,
             )
 
@@ -449,7 +449,7 @@ class MainWindow(QMainWindow):
                 QMessageBox.information(
                     self,
                     "Ikona",
-                    "Przywrócono domyślną ikonę.",
+                    "PrzywrĂłcono domyĹ›lnÄ… ikonÄ™.",
                 )
 
                 return
@@ -459,7 +459,7 @@ class MainWindow(QMainWindow):
 
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "Wybierz ikonę dla "
+            "Wybierz ikonÄ™ dla "
             + module.name,
             str(Path.cwd()),
             "Ikony i obrazy (*.ico *.png *.jpg *.jpeg *.svg *.exe);;"
@@ -480,7 +480,7 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 self,
                 "Ikona",
-                "Zapisano własną ikonę dla: "
+                "Zapisano wĹ‚asnÄ… ikonÄ™ dla: "
                 + module.name,
             )
 
@@ -490,7 +490,7 @@ class MainWindow(QMainWindow):
         ) as exc:
             QMessageBox.critical(
                 self,
-                "Błąd ikony",
+                "BĹ‚Ä…d ikony",
                 str(exc),
             )
 
@@ -508,8 +508,8 @@ class MainWindow(QMainWindow):
         if candidate:
             answer = QMessageBox.question(
                 self,
-                "Znaleziono moduł",
-                f"Znaleziono:\n{candidate}\n\nZainstalować?",
+                "Znaleziono moduĹ‚",
+                f"Znaleziono:\n{candidate}\n\nZainstalowaÄ‡?",
             )
 
             if answer == QMessageBox.Yes:
@@ -518,9 +518,9 @@ class MainWindow(QMainWindow):
         if not source:
             source, _ = QFileDialog.getOpenFileName(
                 self,
-                "Wskaż moduł",
+                "WskaĹĽ moduĹ‚",
                 str(Path.cwd()),
-                "Program Windows (*.exe)",
+                "Moduły Prestige Tech (*.exe *.ps1);;Program Windows (*.exe);;PowerShell (*.ps1)",
             )
 
         if not source:
@@ -557,7 +557,7 @@ class MainWindow(QMainWindow):
 
             QMessageBox.critical(
                 self,
-                "Błąd instalacji",
+                "BĹ‚Ä…d instalacji",
                 str(exc),
             )
 
@@ -615,14 +615,14 @@ class MainWindow(QMainWindow):
         message = (
             f"Zainstalowano: {len(installed)}\n"
             f"Brak lokalnego EXE: {len(missing)}\n"
-            f"Błędy: {len(errors)}"
+            f"BĹ‚Ä™dy: {len(errors)}"
         )
 
         if missing:
             message += (
                 "\n\nBrak:\n"
                 + "\n".join(
-                    "• " + item
+                    "â€˘ " + item
                     for item
                     in missing[:12]
                 )
@@ -630,9 +630,9 @@ class MainWindow(QMainWindow):
 
         if errors:
             message += (
-                "\n\nBłędy:\n"
+                "\n\nBĹ‚Ä™dy:\n"
                 + "\n".join(
-                    "• " + item
+                    "â€˘ " + item
                     for item
                     in errors[:8]
                 )
@@ -660,7 +660,7 @@ class MainWindow(QMainWindow):
             QMessageBox.information(
                 self,
                 "Odinstaluj wszystkie",
-                "Nie ma zainstalowanych modułów.",
+                "Nie ma zainstalowanych moduĹ‚Ăłw.",
             )
 
             return
@@ -668,9 +668,9 @@ class MainWindow(QMainWindow):
         answer = QMessageBox.warning(
             self,
             "Odinstaluj wszystkie",
-            f"Usunąć wszystkie zainstalowane moduły z Dashboardu?\n\n"
-            f"Liczba modułów: {count}\n\n"
-            "Oryginalne EXE pozostaną bez zmian.",
+            f"UsunÄ…Ä‡ wszystkie zainstalowane moduĹ‚y z Dashboardu?\n\n"
+            f"Liczba moduĹ‚Ăłw: {count}\n\n"
+            "Oryginalne EXE pozostanÄ… bez zmian.",
             QMessageBox.Yes
             | QMessageBox.No,
             QMessageBox.No,
@@ -717,7 +717,7 @@ class MainWindow(QMainWindow):
                 self,
                 "Aktualizacja",
                 "Nie znaleziono lokalnego EXE nowszej wersji.\n\n"
-                "Automatyczne pobieranie z GitHub Releases podłączymy później.",
+                "Automatyczne pobieranie z GitHub Releases podĹ‚Ä…czymy pĂłĹşniej.",
             )
 
             return
@@ -726,7 +726,7 @@ class MainWindow(QMainWindow):
             self,
             "Aktualizacja",
             f"Znaleziono lokalny plik:\n\n{candidate}\n\n"
-            f"Zaktualizować {module.name}?",
+            f"ZaktualizowaÄ‡ {module.name}?",
         )
 
         if answer != QMessageBox.Yes:
@@ -762,7 +762,7 @@ class MainWindow(QMainWindow):
 
             QMessageBox.critical(
                 self,
-                "Błąd aktualizacji",
+                "BĹ‚Ä…d aktualizacji",
                 str(exc),
             )
 
@@ -778,7 +778,7 @@ class MainWindow(QMainWindow):
                 self,
                 "Potwierdzenie",
                 module.name
-                + " może zmieniać ustawienia systemu.\n\nUruchomić?",
+                + " moĹĽe zmieniaÄ‡ ustawienia systemu.\n\nUruchomiÄ‡?",
                 QMessageBox.Yes
                 | QMessageBox.No,
                 QMessageBox.No,
@@ -816,7 +816,7 @@ class MainWindow(QMainWindow):
 
             QMessageBox.critical(
                 self,
-                "Błąd uruchamiania",
+                "BĹ‚Ä…d uruchamiania",
                 str(exc),
             )
 
@@ -827,7 +827,7 @@ class MainWindow(QMainWindow):
         answer = QMessageBox.question(
             self,
             "Odinstalowanie",
-            "Usunąć "
+            "UsunÄ…Ä‡ "
             + module.name
             + "?",
         )
@@ -851,7 +851,7 @@ class MainWindow(QMainWindow):
 
             QMessageBox.critical(
                 self,
-                "Błąd",
+                "BĹ‚Ä…d",
                 str(exc),
             )
 

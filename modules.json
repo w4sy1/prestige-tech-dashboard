@@ -1,4 +1,4 @@
-﻿{
+{
     "schema_version":  1,
     "channel":  "stable",
     "modules":  [
@@ -362,6 +362,26 @@
                                          ],
                         "risk":  "external_service",
                         "help":  "Pomocnicza analiza danych diagnostycznych z użyciem AI. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "download_url":  null,
+                        "sha256":  null
+                    },
+                    {
+                        "id":  "prestige-network-sentinel",
+                        "name":  "Network Sentinel",
+                        "category":  "Bezpieczeństwo",
+                        "version":  "2.0.0",
+                        "description":  "Defensywny monitoring hosta i sieci LAN. Wykrywa urządzenia, zmiany, skanowanie portów, ARP/ICMP sweep oraz integruje się z Nmap.",
+                        "executable":  "NetworkSentinel.ps1",
+                        "requirements":  [
+                                             "Windows",
+                                             "PowerShell 5.1+",
+                                             "Administrator dla części funkcji",
+                                             "Npcap opcjonalnie",
+                                             "TShark opcjonalnie",
+                                             "Nmap opcjonalnie"
+                                         ],
+                        "risk":  "advanced",
+                        "help":  "Monitoruje własny komputer i własną sieć LAN. Obsługuje urządzenia znane i zaufane, historię zmian, skanowanie LAN, Windows Firewall, Deep Capture, wykrywanie port sweep, ICMP burst i ARP sweep oraz bridge JSON do Prestige Tech Dashboard.",
                         "download_url":  null,
                         "sha256":  null
                     }

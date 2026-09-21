@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import hashlib, json, os, shutil, subprocess, sys, urllib.request
@@ -85,13 +85,37 @@ class ModuleManager:
         if p.exists(): shutil.rmtree(p)
 
     def launch(self,m):
-        exe=self.executable_path(m)
-        if not exe.is_file(): raise FileNotFoundError("Moduł nie jest zainstalowany.")
-        return subprocess.Popen([str(exe)],cwd=exe.parent)
+        target=self.executable_path(m)
+
+        if not target.is_file():
+            raise FileNotFoundError("Moduł nie jest zainstalowany.")
+
+        if target.suffix.lower() == ".ps1":
+            bridge_dir = APP_DIR / "runtime" / "bridge"
+            bridge_dir.mkdir(parents=True, exist_ok=True)
+
+            return subprocess.Popen(
+                [
+                    "powershell.exe",
+                    "-NoProfile",
+                    "-STA",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(target),
+                    "-DashboardRoot",
+                    str(APP_DIR),
+                    "-BridgeDir",
+                    str(bridge_dir),
+                ],
+                cwd=target.parent,
+            )
+
+        return subprocess.Popen([str(target)],cwd=target.parent)
 
     def find_local(self,m,roots):
         for root in map(Path,roots):
-            for p in (root/m.executable, root/"PRESTIGE-TECH-EXE"/m.executable, root.parent/"PRESTIGE-TECH-EXE"/m.executable):
+            for p in (root/m.executable, root/"PRESTIGE-TECH-EXE"/m.executable, root.parent/"PRESTIGE-TECH-EXE"/m.executable, root/"tools"/"network-sentinel"/m.executable):
                 if p.is_file(): return p
         return None
 
