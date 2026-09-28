@@ -184,8 +184,11 @@ class ModuleCard(QFrame):
             meta.addWidget(label("Bez dodatkowych wymagań", 8, SUBTLE))
         meta.addStretch()
 
+        source_available = manager.source_path(module) is not None
         if installed:
             status, color = "● Zainstalowano", GREEN
+        elif source_available:
+            status, color = "● Kod źródłowy", CYAN
         elif portable and portable_available:
             status, color = "● Portable", CYAN
         elif portable and not portable_available:
@@ -204,7 +207,9 @@ class ModuleCard(QFrame):
 
         if installed or (portable and portable_available):
             actions.addWidget(button(
-                "Uruchom portable" if portable and portable_available and not installed else "Uruchom",
+                "Uruchom z kodu" if source_available and not installed else (
+                    "Uruchom portable" if portable and portable_available and not installed else "Uruchom"
+                ),
                 lambda: self.run_requested.emit(module),
                 True
             ))

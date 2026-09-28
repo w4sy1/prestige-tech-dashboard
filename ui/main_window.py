@@ -788,6 +788,9 @@ class MainWindow(QMainWindow):
                 return
 
         try:
+            if self.mm.source_path(module) is not None and not self.mm.is_installed(module):
+                self.mm.launch(module)
+                return
             if self.portable_mode:
                 candidate = self.mm.find_local(
                     module,

@@ -9,6 +9,21 @@ REPORTS_DIR = APP_DIR / "reports"
 LOGS_DIR = APP_DIR / "logs"
 CONFIG_DIR = APP_DIR / "config"
 
+# Źródłowe Centra działają obok Dashboardu w repozytorium prestige-tech.
+# Identyfikatory i nazwy plików są stałe; manifest nie może wskazać dowolnego skryptu.
+SOURCE_CENTERS = {
+    "prestige-network-center": "network_center.py",
+    "prestige-monitor-center": "monitor.py",
+    "prestige-registry-manager": "registry_manager.py",
+    "prestige-storage-center": "storage_center.py",
+    "prestige-android-center": "android_center.py",
+    "prestige-security-center": "security_center.py",
+    "prestige-system-center": "system_center.py",
+    "prestige-termux-center": "termux_center_gui.py",
+    "prestige-ai-center": "ai_center.py",
+    "prestige-report-center": "report_center.py",
+}
+
 @dataclass(frozen=True)
 class Module:
     id: str
@@ -49,6 +64,13 @@ class ModuleManager:
     def executable_path(self,m): return self.module_dir(m) / m.executable
     def is_installed(self,m): return self.executable_path(m).is_file()
 
+    def source_path(self, m):
+        filename = SOURCE_CENTERS.get(m.id)
+        if not filename or getattr(sys, "frozen", False):
+            return None
+        path = Path(__file__).resolve().parent.parent / "prestige-tech" / filename
+        return path if path.is_file() else None
+
     @staticmethod
     def sha256(path):
         h=hashlib.sha256()
@@ -88,7 +110,10 @@ class ModuleManager:
         target=self.executable_path(m)
 
         if not target.is_file():
-            raise FileNotFoundError("Moduł nie jest zainstalowany.")
+            source = self.source_path(m)
+            if source is None:
+                raise FileNotFoundError("Moduł nie jest zainstalowany i nie znaleziono kodu źródłowego Centrum.")
+            return subprocess.Popen([sys.executable, str(source)], cwd=source.parent)
 
         if target.suffix.lower() == ".ps1":
             bridge_dir = APP_DIR / "runtime" / "bridge"
@@ -114,6 +139,9 @@ class ModuleManager:
         return subprocess.Popen([str(target)],cwd=target.parent)
 
     def find_local(self,m,roots):
+        source = self.source_path(m)
+        if source is not None and not self.is_installed(m):
+            return source
         for root in map(Path,roots):
             for p in (root/m.executable, root/"PRESTIGE-TECH-EXE"/m.executable, root.parent/"PRESTIGE-TECH-EXE"/m.executable, root/"tools"/"network-sentinel"/m.executable):
                 if p.is_file(): return p

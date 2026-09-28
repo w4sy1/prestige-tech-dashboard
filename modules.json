@@ -384,6 +384,176 @@
                         "help":  "Monitoruje własny komputer i własną sieć LAN. Obsługuje urządzenia znane i zaufane, historię zmian, skanowanie LAN, Windows Firewall, Deep Capture, wykrywanie port sweep, ICMP burst i ARP sweep oraz bridge JSON do Prestige Tech Dashboard.",
                         "download_url":  null,
                         "sha256":  null
+                    },
+                    {
+                        "id": "prestige-network-center",
+                        "name": "Network Center",
+                        "category": "Sieć",
+                        "version": "0.1.0.dev0",
+                        "description": "Diagnostyka sieci, urządzenia LAN i analiza wyników.",
+                        "executable": "network_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "safe",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-monitor-center",
+                        "name": "Monitor",
+                        "category": "Bezpieczeństwo",
+                        "version": "0.1.0.dev0",
+                        "description": "Obserwacja plików, integralności i zdarzeń.",
+                        "executable": "monitor.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "safe",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-registry-manager",
+                        "name": "Registry Manager",
+                        "category": "Komputer i Windows",
+                        "version": "0.1.0.dev0",
+                        "description": "Katalog odczytów rejestru i kontrolowane zmiany HKCU.",
+                        "executable": "registry_manager.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "changes_system",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-storage-center",
+                        "name": "Storage & Recovery",
+                        "category": "Komputer i Windows",
+                        "version": "0.1.0.dev0",
+                        "description": "Obrazowanie, weryfikacja i odzyskiwanie danych.",
+                        "executable": "storage_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "advanced",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-android-center",
+                        "name": "Android Center",
+                        "category": "Android",
+                        "version": "0.1.0.dev0",
+                        "description": "Diagnostyka ADB i inspekcja aplikacji.",
+                        "executable": "android_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "safe",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-security-center",
+                        "name": "Security Center",
+                        "category": "Bezpieczeństwo",
+                        "version": "0.1.0.dev0",
+                        "description": "Audyt Windows, inspekcja plików i triage.",
+                        "executable": "security_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "safe",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-system-center",
+                        "name": "System Center",
+                        "category": "Komputer i Windows",
+                        "version": "0.1.0.dev0",
+                        "description": "Migawki, diagnostyka i kontrolowane naprawy Windows.",
+                        "executable": "system_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "changes_system",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-termux-center",
+                        "name": "Termux Center",
+                        "category": "Android",
+                        "version": "0.1.0.dev0",
+                        "description": "Konfiguracja Termux i narzędzia diagnostyczne.",
+                        "executable": "termux_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "changes_system",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-ai-center",
+                        "name": "AI Diagnostic Assistant",
+                        "category": "AI i raporty",
+                        "version": "0.1.0.dev0",
+                        "description": "Lokalna analiza raportów oraz podgląd danych dla AI.",
+                        "executable": "ai_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "advanced",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
+                    },
+                    {
+                        "id": "prestige-report-center",
+                        "name": "Repair Report",
+                        "category": "AI i raporty",
+                        "version": "0.1.0.dev0",
+                        "description": "Raport serwisowy HTML, JSON, TXT i PDF.",
+                        "executable": "report_center.exe",
+                        "requirements": [
+                            "Python 3",
+                            "PySide6",
+                            "Repozytorium prestige-tech"
+                        ],
+                        "risk": "safe",
+                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "download_url": null,
+                        "sha256": null
                     }
                 ]
 }

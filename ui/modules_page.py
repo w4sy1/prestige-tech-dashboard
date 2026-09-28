@@ -253,11 +253,12 @@ class ModulesPage(QWidget):
             return
 
         for i, m in enumerate(items):
+            source_available = self.mm.source_path(m) is not None
             card = ModuleCard(
                 m,
                 self.mm,
                 installed=self.mm.is_installed(m),
-                portable=self.portable,
+                portable=self.portable or source_available,
                 portable_available=bool(self._portable_candidate(m)),
             )
             card.install_requested.connect(self.install_requested.emit)
