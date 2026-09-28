@@ -1,5 +1,30 @@
 # Prestige Tech Dashboard
-PRESTIGE TECH — by Dominik Wasilak — v0.3.1
+PRESTIGE TECH — by Dominik Wasilak
+
+Dashboard uruchamia samodzielne narzędzia Prestige Tech oraz dziesięć nowych
+Centrów z sąsiedniego repozytorium
+[prestige-tech](https://github.com/w4sy1/prestige-tech). Wygląd Dashboardu
+pozostaje bez zmian. Stare moduły pozostają w katalogu jako historia projektu.
+
+## Uruchomienie Centrów z kodu
+
+Sklonuj `prestige-tech` i `prestige-tech-dashboard` do jednego katalogu
+nadrzędnego. W środowisku Python 3.11+ zainstaluj zależności:
+
+```powershell
+cd ./prestige-tech
+python -m pip install -e ".[gui,pdf,signing]"
+cd ../prestige-tech-dashboard
+python gui_pyside.py
+```
+
+W karcie Centrum kliknij **Uruchom z kodu**. Dashboard korzysta z ustalonej
+listy lokalnych skryptów; nie przyjmuje dowolnej ścieżki z manifestu.
+Nowe EXE Centrów nie zostały jeszcze zweryfikowane i nie są częścią starszych
+wydań do pobrania. Dostępność funkcji i brakujące testy opisuje
+[status projektu](https://github.com/w4sy1/prestige-tech/blob/master/PROJECT-STATUS.md).
+
+## Starsze narzędzia i wersja 0.3.1
 
 Polski launcher konsolowy samodzielnych narzędzi Prestige Tech, bez kopiowania ich logiki.
 
@@ -26,7 +51,8 @@ Brak uprawnień lub backendu jest błędem, nie pozytywnym wynikiem audytu.
 Zakres MVP i ograniczenia platformowe opisano w `docs/USAGE.md`.
 
 ## Autor i licencja
-Dominik Wasilak, Prestige Tech, prestigetech@gmail.com. Licencja: `Prestige Tech Free Use License` - szczegóły w `LICENSE`.
+Dominik Wasilak, Prestige Tech, prestigetech@gmail.com. Własny kod:
+[Prestige Tech Free Use License](LICENSE).
 
 ## Wesprzyj autora
 Opcja wsparcia autora zostanie udostępniona w przyszłości.
@@ -38,4 +64,5 @@ Uruchom `python gui.py` albo samodzielny EXE. W EXE interpreter, PDF i potrzebne
 biblioteki Python są dołączone. Zewnętrzne backendy systemowe pozostają wymagane.
 Budowa: [docs/BUILD.md](docs/BUILD.md). Obsługa: [docs/GUI.md](docs/GUI.md).
 Ograniczenia bufora i testów: [docs/DESKTOP-STATUS.md](docs/DESKTOP-STATUS.md).
-Własny kod jest objęty Prestige Tech Free Use License. Licencje zależności pozostają bez zmian: THIRD_PARTY_NOTICES.txt.
+Własny kod podlega Prestige Tech Free Use License. Licencje zależności:
+THIRD_PARTY_NOTICES.txt.

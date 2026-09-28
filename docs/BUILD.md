@@ -16,7 +16,7 @@ Funkcje Termuxa wymagają Androida i Termuxa.
 Program zapisuje dane w `%LOCALAPPDATA%/PrestigeTech/<nazwa-programu>`.
 Przełącznik `--backend` uruchamia CLI. `--smoke` sprawdza konstrukcję okna.
 Plik nie jest podpisany certyfikatem Authenticode.
-Własny kod ma licencję MIT; licencje zależności znajdują się w
+Własny kod podlega Prestige Tech Free Use License; licencje zależności znajdują się w
 `THIRD_PARTY_NOTICES.txt` i `assets/FONT-LICENSE.txt`.
 
 Workflow Tests uruchamia testy na Windows z Pythonem 3.11 i 3.14.
