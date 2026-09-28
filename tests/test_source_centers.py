@@ -38,8 +38,8 @@ class SourceCentersTests(unittest.TestCase):
                  patch("module_manager.subprocess.Popen") as launch:
                 self.manager.launch(module)
         args, kwargs = launch.call_args
-        self.assertEqual(args[0][1], str(source))
-        self.assertEqual(kwargs["cwd"], source.parent)
+        self.assertEqual(Path(args[0][1]).resolve(), source.resolve())
+        self.assertEqual(kwargs["cwd"].resolve(), source.parent.resolve())
 
     def test_unknown_module_cannot_launch_arbitrary_source(self):
         module = next(m for m in self.manager.modules if m.id not in SOURCE_CENTERS)
