@@ -1,5 +1,5 @@
 ﻿from pathlib import Path
-import os, tkinter as tk
+import os, sys, tkinter as tk
 from tkinter import filedialog, messagebox
 from module_manager import APP_DIR, ModuleManager
 
@@ -232,6 +232,12 @@ class Dashboard:
         if os.name=="nt":os.startfile(p)
 
 def main():
-    root=tk.Tk(); Dashboard(root); root.mainloop()
+    root=tk.Tk(); Dashboard(root)
+    if "--smoke" in sys.argv:
+        root.update_idletasks()
+        root.destroy()
+        return 0
+    root.mainloop()
+    return 0
 if __name__=="__main__":main()
 
