@@ -60,7 +60,7 @@ class SourceCentersTests(unittest.TestCase):
                  patch.object(self.manager, "executable_path", side_effect=lambda m: old_exe if m == legacy else Path(directory) / "missing.exe"), \
                  patch("module_manager.subprocess.Popen") as launch:
                 self.manager.launch(center)
-                self.assertEqual(Path(launch.call_args.args[0][1]), source)
+                self.assertEqual(Path(launch.call_args.args[0][1]).resolve(), source.resolve())
                 self.manager.launch(legacy)
                 self.assertEqual(launch.call_args.args[0], [str(old_exe)])
 
