@@ -218,13 +218,13 @@
                         "name":  "Inspektor plików",
                         "category":  "Pliki i dane",
                         "version":  "0.3.1",
-                        "description":  "Analizuje metadane i właściwości wskazanych plików.",
+                        "description":  "Starszy samodzielny EXE do analizy pliku; nowa inspekcja i eksport są też w Security Center.",
                         "executable":  "prestige-file-inspector.exe",
                         "requirements":  [
 
                                          ],
                         "risk":  "safe",
-                        "help":  "Analizuje metadane i właściwości wskazanych plików. Kliknij Zainstaluj, wskaż lokalny plik EXE, a po instalacji uruchamiaj moduł bezpośrednio z Dashboardu.",
+                        "help":  "Ta pozycja uruchamia starszy samodzielny File Inspector po wskazaniu lokalnego EXE. Nowa inspekcja pliku, opcjonalne ciągi znaków oraz eksport JSON/TXT/HTML/PDF są w Security Center, które można uruchomić z kodu sąsiedniego repozytorium prestige-tech. Nowy EXE Centrum nie jest jeszcze zweryfikowany.",
                         "download_url":  null,
                         "sha256":  null
                     },
@@ -475,7 +475,7 @@
                         "name": "Security Center",
                         "category": "Bezpieczeństwo",
                         "version": "0.1.0.dev0",
-                        "description": "Audyt Windows, inspekcja plików i triage.",
+                        "description": "Audyt Windows, inspekcja plików z eksportem JSON/TXT/HTML/PDF i triage.",
                         "executable": "security_center.exe",
                         "requirements": [
                             "Python 3",
@@ -483,7 +483,7 @@
                             "Repozytorium prestige-tech"
                         ],
                         "risk": "safe",
-                        "help": "Uruchom portable z sąsiedniego repozytorium prestige-tech. Wymagane są zależności Pythona. Instalacja EXE po zweryfikowaniu kompilacji.",
+                        "help": "Uruchom z kodu sąsiedniego repozytorium prestige-tech. Wybierz plik do odczytowej inspekcji; ciągi znaków są domyślnie wyłączone. Po udanej analizie możesz zapisać JSON/TXT/HTML lub PDF. Security Center ma również audyt Windows i Malware Triage. Wymagane są Python i PySide6, a PDF wymaga reportlab. Nowy EXE Centrum nie jest jeszcze zweryfikowany.",
                         "download_url": null,
                         "sha256": null
                     },

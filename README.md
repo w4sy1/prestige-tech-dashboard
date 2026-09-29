@@ -6,6 +6,11 @@ Centrów z sąsiedniego repozytorium
 [prestige-tech](https://github.com/w4sy1/prestige-tech). Wygląd Dashboardu
 pozostaje bez zmian. Stare moduły pozostają w katalogu jako historia projektu.
 
+Karta **Security Center** uruchamia aktualną inspekcję plików z eksportem
+JSON/TXT/HTML/PDF z kodu `prestige-tech`. Karta **Inspektor plików** nadal
+uruchamia starszy, lokalnie wskazany EXE. Dzięki temu oba sposoby pracy są
+dostępne bez zmiany wyglądu Dashboardu. PDF wymaga zależności `reportlab`.
+
 ## Uruchomienie Centrów z kodu
 
 Sklonuj `prestige-tech` i `prestige-tech-dashboard` do jednego katalogu
