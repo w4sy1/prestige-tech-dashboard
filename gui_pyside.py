@@ -10,6 +10,9 @@ def main():
     app.setWindowIcon(app_icon())
     app.setApplicationName("Prestige Tech Dashboard")
     win = MainWindow()
+    if "--smoke" in sys.argv:
+        win.close()
+        return 0
     win.show()
     return app.exec()
 

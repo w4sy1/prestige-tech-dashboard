@@ -18,7 +18,7 @@ for _prestige_key in list(os.environ):
 os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
 
 
-CURRENT_VERSION = "1.1.2"
+CURRENT_VERSION = "1.1.3"
 MANIFEST_URL = "https://raw.githubusercontent.com/w4sy1/prestige-tech/master/dashboard-manifest.json"
 DASHBOARD_EXE = "Prestige-Tech-Dashboard.exe"
 LAUNCHER_EXE = "Prestige-Tech-Launcher.exe"
@@ -254,6 +254,8 @@ if ($process.ExitCode -eq 0) {{
 
 
 def main():
+    if "--smoke" in sys.argv:
+        return 0
     try:
         stable = fetch_manifest()
         remote_version = str(stable["version"])
