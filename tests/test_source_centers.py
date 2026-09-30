@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 from unittest.mock import patch
 
-from module_manager import ModuleManager, SOURCE_CENTERS
+from module_manager import Module, ModuleManager, SOURCE_CENTERS
 
 
 class SourceCentersTests(unittest.TestCase):
@@ -42,27 +42,17 @@ class SourceCentersTests(unittest.TestCase):
         self.assertEqual(kwargs["cwd"].resolve(), source.parent.resolve())
 
     def test_unknown_module_cannot_launch_arbitrary_source(self):
-        module = next(m for m in self.manager.modules if m.id not in SOURCE_CENTERS)
+        module = Module("unknown", "Unknown", "Other", "0", "", "unknown.exe", (), "safe", "")
         self.assertIsNone(self.manager.source_path(module))
 
-    def test_security_center_source_and_legacy_file_inspector_stay_separate(self):
+    def test_catalog_contains_only_current_centers(self):
         modules = {module.id: module for module in self.manager.modules}
-        center = modules["prestige-security-center"]
-        legacy = modules["prestige-file-inspector"]
-        with TemporaryDirectory() as directory:
-            source_dir = Path(directory) / "prestige-tech"
-            source_dir.mkdir()
-            source = source_dir / "security_center.py"
-            source.touch()
-            old_exe = Path(directory) / "prestige-file-inspector.exe"
-            old_exe.touch()
-            with patch("module_manager.__file__", str(Path(directory) / "dashboard" / "module_manager.py")), \
-                 patch.object(self.manager, "executable_path", side_effect=lambda m: old_exe if m == legacy else Path(directory) / "missing.exe"), \
-                 patch("module_manager.subprocess.Popen") as launch:
-                self.manager.launch(center)
-                self.assertEqual(Path(launch.call_args.args[0][1]).resolve(), source.resolve())
-                self.manager.launch(legacy)
-                self.assertEqual(launch.call_args.args[0], [str(old_exe)])
+        self.assertEqual(set(modules), set(SOURCE_CENTERS))
+        from ui.home_page import MAIN
+        from ui.widgets import CATEGORY_STYLE
+        categories = {module.category for module in modules.values()}
+        self.assertEqual({name for name, _ in MAIN}, categories)
+        self.assertTrue(categories.issubset(CATEGORY_STYLE))
 
 
 if __name__ == "__main__":

@@ -27,10 +27,13 @@ def button(text, callback=None, primary=False):
 CATEGORY_STYLE = {
     "Komputer i Windows": ("#082038", "#12a8ff", "windows"),
     "Sieć i Internet": ("#082038", "#1ac8ff", "network"),
+    "Sieć": ("#082038", "#1ac8ff", "network"),
     "Android i ADB": ("#0b2b29", "#52db72", "android"),
+    "Android": ("#0b2b29", "#52db72", "android"),
     "Bezpieczeństwo": ("#1b1740", "#8b68ff", "security"),
     "Pliki i dane": ("#302912", "#f4cc47", "files"),
     "Narzędzia zaawansowane": ("#082038", "#6dc2ff", "advanced"),
+    "AI i raporty": ("#082038", "#6dc2ff", "advanced"),
 }
 
 RISK_STYLE = {

@@ -12,6 +12,8 @@ QToolTip{{background:{PANEL};color:{TEXT};border:1px solid {LINE};padding:6px;}}
 """
 CATEGORY_STYLE={
 "Komputer i Windows":("#082038","#0aa9ff"),"Sieć i Internet":("#082038","#0aa9ff"),
+"Sieć":("#082038","#0aa9ff"),
 "Android i ADB":("#092b29","#49dd72"),"Bezpieczeństwo":("#1b1740","#8264ff"),
+"Android":("#092b29","#49dd72"),"AI i raporty":("#082038","#3cb9ff"),
 "Pliki i dane":("#302a12","#f5c83c"),"Narzędzia zaawansowane":("#082038","#3cb9ff")}
 

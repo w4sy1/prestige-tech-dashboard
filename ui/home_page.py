@@ -6,12 +6,11 @@ from .theme import *
 from .widgets import *
 
 MAIN = [
-    ("Komputer i Windows","Diagnostyka, naprawa,\nczyszczenie, optymalizacja"),
-    ("Sieć i Internet","Diagnostyka sieci, skanowanie,\nDNS, monitoring"),
-    ("Android i ADB","Zarządzanie urządzeniami,\nTermux, diagnostyka"),
-    ("Bezpieczeństwo","Skanowanie, analiza plików,\nmalware, integralność"),
-    ("Pliki i dane","Odzysk danych, hashe,\nanaliza plików, monitoring"),
-    ("Narzędzia zaawansowane","Nmap, snapshoty, raporty,\nnarzędzia systemowe")
+    ("Komputer i Windows","System, rejestr oraz\ndane i odzyskiwanie"),
+    ("Sieć","Diagnostyka sieci, skanowanie\ni monitoring"),
+    ("Android","ADB, aplikacje i Termux"),
+    ("Bezpieczeństwo","Kontrole, pliki i integralność"),
+    ("AI i raporty","Analiza oraz raporty serwisowe")
 ]
 
 SOCIALS = {
@@ -118,7 +117,7 @@ class HomePage(QWidget):
 
         rg = QGridLayout()
         rg.setSpacing(10)
-        for i, module_id in enumerate(["prestige-termux-toolkit", "prestige-nmap-profiles", "prestige-windows-toolkit"]):
+        for i, module_id in enumerate(["prestige-network-center", "prestige-system-center", "prestige-security-center"]):
             m = next((m for m in mm.modules if m.id == module_id), None)
             if m:
                 card = RecentCard(m, mm, mm.is_installed(m))

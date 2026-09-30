@@ -1,15 +1,13 @@
 # Prestige Tech Dashboard
 PRESTIGE TECH — by Dominik Wasilak
 
-Dashboard uruchamia samodzielne narzędzia Prestige Tech oraz dziesięć nowych
-Centrów z sąsiedniego repozytorium
-[prestige-tech](https://github.com/w4sy1/prestige-tech). Wygląd Dashboardu
-pozostaje bez zmian. Stare moduły pozostają w katalogu jako historia projektu.
+Katalog Dashboardu pokazuje dziesięć Centrów z sąsiedniego repozytorium
+[prestige-tech](https://github.com/w4sy1/prestige-tech). Układ i motyw aplikacji
+pozostały. Stare osobne repozytoria usunięto z GitHuba po zapisaniu lokalnego
+archiwum; historyczne pliki EXE w wydaniach nie są nowymi EXE Centrów.
 
-Karta **Security Center** uruchamia aktualną inspekcję plików z eksportem
-JSON/TXT/HTML/PDF z kodu `prestige-tech`. Karta **Inspektor plików** nadal
-uruchamia starszy, lokalnie wskazany EXE. Dzięki temu oba sposoby pracy są
-dostępne bez zmiany wyglądu Dashboardu. PDF wymaga zależności `reportlab`.
+Karta **Security Center** uruchamia inspekcję plików z eksportem
+JSON/TXT/HTML/PDF z kodu `prestige-tech`. PDF wymaga `reportlab`.
 
 ## Uruchomienie Centrów z kodu
 
@@ -29,9 +27,10 @@ Nowe EXE Centrów nie zostały jeszcze zweryfikowane i nie są częścią starsz
 wydań do pobrania. Dostępność funkcji i brakujące testy opisuje
 [status projektu](https://github.com/w4sy1/prestige-tech/blob/master/PROJECT-STATUS.md).
 
-## Starsze narzędzia i wersja 0.3.1
+## Historyczny launcher konsolowy i wersja 0.3.1
 
-Polski launcher konsolowy samodzielnych narzędzi Prestige Tech, bez kopiowania ich logiki.
+Kod dawnego launchera konsolowego pozostaje w repozytorium dla odtworzenia
+starszego środowiska. Nie stanowi części katalogu dziesięciu Centrów w GUI.
 
 ## Instalacja i uruchomienie
 Python 3.11+. Skopiuj katalog projektu. Podstawowy CLI używa biblioteki standardowej. PDF wymaga requirements-gui.txt; podpisy, jeśli dostępne, wymagają requirements-signing.txt.
