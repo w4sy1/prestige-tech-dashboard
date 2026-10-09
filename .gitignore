@@ -21,6 +21,8 @@ __pycache__/
 *.log
 *.tmp
 *.bak
+*.before-encoding-fix
+*.encoding-backup
 
 # PyInstaller / build outputs
 build/

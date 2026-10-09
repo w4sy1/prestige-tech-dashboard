@@ -5,6 +5,7 @@ from module_manager import CONFIG_DIR
 SETTINGS_FILE = CONFIG_DIR / "dashboard_settings.json"
 
 DEFAULTS = {
+    "dashboard_style": "blue",
     "channel": "Stable",
     "language": "Polski",
     "portable_default": False,
@@ -21,6 +22,8 @@ def load_settings():
                 for key in DEFAULTS:
                     if key in raw:
                         data[key] = raw[key]
+                if data["dashboard_style"] not in ("blue", "simple"):
+                    data["dashboard_style"] = "blue"
     except (OSError, ValueError):
         pass
     return data
@@ -29,6 +32,8 @@ def save_settings(data):
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     clean = dict(DEFAULTS)
     clean.update({k: data[k] for k in DEFAULTS if k in data})
+    if clean["dashboard_style"] not in ("blue", "simple"):
+        raise ValueError("Nieznany styl Dashboardu.")
     SETTINGS_FILE.write_text(json.dumps(clean, ensure_ascii=False, indent=2), encoding="utf-8")
 
 def reset_settings():

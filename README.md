@@ -6,6 +6,14 @@ Katalog Dashboardu pokazuje dziesięć Centrów z sąsiedniego repozytorium
 pozostały. Stare osobne repozytoria usunięto z GitHuba po zapisaniu lokalnego
 archiwum; historyczne pliki EXE w wydaniach nie są nowymi EXE Centrów.
 
+W **Ustawieniach** można przełączyć stronę główną między obecnym niebieskim
+widokiem a czarno-złotym widokiem z górskim tłem. Wybór jest zapamiętywany lokalnie.
+Drugi widok zachowuje działające przejścia do Centrów; karty stanu nie pokazują
+fikcyjnych wyników ani nie twierdzą, że ochrona działa bez uruchomienia audytu.
+Oba widoki korzystają z jednego katalogu Centrów i tych samych akcji.
+Drugi widok realizuje opis układu; odwzorowanie wizualne 1:1 wymaga grafik
+referencyjnych.
+
 Karta **Security Center** uruchamia inspekcję plików z eksportem
 JSON/TXT/HTML/PDF z kodu `prestige-tech`. PDF wymaga `reportlab`.
 

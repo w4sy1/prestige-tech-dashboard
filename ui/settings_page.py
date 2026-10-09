@@ -65,6 +65,16 @@ class SettingsPage(QWidget):
         app.body.addLayout(row)
 
         row = QHBoxLayout()
+        row.addWidget(label("Wygląd strony głównej",8,TEXT,True))
+        row.addStretch()
+        self.dashboard_style = QComboBox()
+        self.dashboard_style.addItem("Niebieski (obecny)", "blue")
+        self.dashboard_style.addItem("Czarny i złoty (góry)", "simple")
+        self.dashboard_style.setCurrentIndex(self.dashboard_style.findData(self.data["dashboard_style"]))
+        row.addWidget(self.dashboard_style)
+        app.body.addLayout(row)
+
+        row = QHBoxLayout()
         row.addWidget(label("Język",8,TEXT,True))
         row.addStretch()
         self.language = QComboBox()
@@ -126,6 +136,7 @@ class SettingsPage(QWidget):
 
     def collect(self):
         return {
+            "dashboard_style": self.dashboard_style.currentData(),
             "channel": self.channel.currentText(),
             "language": self.language.currentText(),
             "portable_default": self.portable.isChecked(),
@@ -156,6 +167,7 @@ class SettingsPage(QWidget):
             return
         self.data = reset_settings()
         self.channel.setCurrentText(self.data["channel"])
+        self.dashboard_style.setCurrentIndex(self.dashboard_style.findData(self.data["dashboard_style"]))
         self.portable.setChecked(self.data["portable_default"])
         self.confirm.setChecked(self.data["confirm_system_changes"])
         self.check_updates.setChecked(self.data["check_updates_on_start"])

@@ -3,7 +3,7 @@ from pathlib import Path
 import logging
 import subprocess
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QStackedWidget,
     QScrollArea, QMessageBox, QFileDialog, QLabel
@@ -13,6 +13,7 @@ from module_manager import LOGS_DIR, MODULES_DIR, ModuleManager
 from .theme import *
 from .sidebar import Sidebar
 from .home_page import HomePage
+from .home_simple_page import SimpleHomePage
 from .modules_unified_page import ModulesUnifiedPage
 from .updates_page import UpdatesPage
 from .system_tools_report_page import SystemToolsReportPage
@@ -78,6 +79,7 @@ class MainWindow(QMainWindow):
         body_layout.addWidget(self.sidebar)
 
         self.stack = QStackedWidget()
+        self.stack.currentChanged.connect(lambda _: self.apply_page_style())
         body_layout.addWidget(self.stack, 1)
         outer.addWidget(body, 1)
 
@@ -141,8 +143,10 @@ class MainWindow(QMainWindow):
         fl.addWidget(repo_btn)
 
         outer.addWidget(footer)
+        self.footer = footer
 
         self.home = HomePage(self.mm)
+        self.simple_home = SimpleHomePage(self.mm)
         self.modules = ModulesUnifiedPage(self.mm)
         self.updates = UpdatesPage(self.mm)
         self.system_tools = SystemToolsReportPage(self.mm)
@@ -153,6 +157,7 @@ class MainWindow(QMainWindow):
         self.support = SupportPage()
 
         self.home_view = self.wrap(self.home)
+        self.simple_home_view = self.wrap(self.simple_home)
         self.modules_view = self.wrap(self.modules)
         self.updates_view = self.wrap(self.updates)
         self.system_tools_view = self.wrap(self.system_tools)
@@ -164,6 +169,7 @@ class MainWindow(QMainWindow):
 
         for view in (
             self.home_view,
+            self.simple_home_view,
             self.modules_view,
             self.updates_view,
             self.system_tools_view,
@@ -177,6 +183,7 @@ class MainWindow(QMainWindow):
 
         for page in (
             self.home,
+            self.simple_home,
             self.modules,
         ):
             self._wire(page)
@@ -202,6 +209,8 @@ class MainWindow(QMainWindow):
         self.home.category_requested.connect(
             self.filter_home
         )
+        self.simple_home.modules_requested.connect(lambda: self.navigate("Moduły"))
+        self.simple_home.category_requested.connect(self.filter_home)
 
         self.updates.update_requested.connect(
             self.update_module
@@ -214,7 +223,33 @@ class MainWindow(QMainWindow):
         self.about.support_requested.connect(lambda: self.navigate("Wsparcie"))
         self.support.guide_requested.connect(lambda: self.navigate("Poradnik"))
 
+        self.apply_dashboard_style()
         self.navigate("Strona główna")
+
+    def apply_dashboard_style(self):
+        reference = self.settings_data.get("dashboard_style") == "simple"
+        self.sidebar.set_reference_style(reference)
+        self.footer.setVisible(not reference)
+        self.setStyleSheet(reference_stylesheet(APP_QSS) if reference else APP_QSS)
+        self.apply_page_style()
+
+    def apply_page_style(self):
+        if not hasattr(self, "stack"):
+            return
+        reference = self.settings_data.get("dashboard_style") == "simple"
+        for view in (self.stack.currentWidget(),):
+            if view is None or view in (getattr(self, "simple_home_view", None),
+                                        getattr(self, "home_view", None)):
+                continue
+            for widget in (view, *view.findChildren(QWidget)):
+                if widget is self.sidebar:
+                    continue
+                if not hasattr(widget, "_prestige_base_style"):
+                    widget._prestige_base_style = widget.styleSheet()
+                base = widget._prestige_base_style
+                target = reference_stylesheet(base) if reference else base
+                if widget.styleSheet() != target:
+                    widget.setStyleSheet(target)
 
     def wrap(self, widget):
         area = QScrollArea()
@@ -240,6 +275,16 @@ class MainWindow(QMainWindow):
         )
 
     def navigate(self, name):
+        QTimer.singleShot(0, self.apply_page_style)
+        reference = self.settings_data.get("dashboard_style") == "simple"
+        if reference and name in ("Moduły", "Narzędzia systemowe", "Zainstalowane"):
+            categories = {"Moduły": "Sieć", "Narzędzia systemowe": "Komputer i Windows",
+                          "Zainstalowane": "Bezpieczeństwo"}
+            self.sidebar.set_active(name)
+            self.modules.render()
+            self.stack.setCurrentWidget(self.modules_view)
+            self.modules.set_filter(categories[name], "")
+            return
         if name == "Zainstalowane":
             name = "Moduły"
         self.sidebar.set_active(name)
@@ -254,7 +299,8 @@ class MainWindow(QMainWindow):
 
         if name == "Strona główna":
             self.stack.setCurrentWidget(
-                self.home_view
+                self.simple_home_view if self.settings_data.get("dashboard_style") == "simple"
+                else self.home_view
             )
             return
 
@@ -335,6 +381,9 @@ class MainWindow(QMainWindow):
 
     def apply_settings(self, data):
         self.settings_data = dict(data)
+        self.apply_dashboard_style()
+        if self.sidebar.buttons.get("Strona główna") and self.sidebar.buttons["Strona główna"].isChecked():
+            self.navigate("Strona główna")
         self.portable_mode = bool(data.get("portable_default", False))
         self.modules.set_portable(self.portable_mode)
 
