@@ -31,8 +31,9 @@ python gui_pyside.py
 
 W karcie Centrum kliknij **Uruchom z kodu**. Dashboard korzysta z ustalonej
 listy lokalnych skryptów; nie przyjmuje dowolnej ścieżki z manifestu.
-Nowe EXE Centrów nie zostały jeszcze zweryfikowane i nie są częścią starszych
-wydań do pobrania. Dostępność funkcji i brakujące testy opisuje
+Nowe EXE Centrów przeszły lokalny test uruchomienia `--smoke` i są składane z
+Dashboardem przez `python package_desktop.py`. Nie są częścią starszych wydań
+do pobrania. Dostępność funkcji i brakujące testy opisuje
 [status projektu](https://github.com/w4sy1/prestige-tech/blob/master/PROJECT-STATUS.md).
 
 ## Historyczny launcher konsolowy i wersja 0.3.1
@@ -70,10 +71,12 @@ Dominik Wasilak, Prestige Tech, prestigetech@gmail.com. Własny kod:
 Opcja wsparcia autora zostanie udostępniona w przyszłości.
 Linki w `config/author.json`.
 
-## GUI i EXE 0.3.1
+## GUI i EXE Dashboardu
 
-Uruchom `python gui.py` albo samodzielny EXE. W EXE interpreter, PDF i potrzebne
-biblioteki Python są dołączone. Zewnętrzne backendy systemowe pozostają wymagane.
+Uruchom `python gui_pyside.py` albo samodzielny EXE z obu stylami strony głównej.
+W EXE interpreter, PDF i potrzebne biblioteki Python są dołączone. Zewnętrzne
+backendy systemowe pozostają wymagane. Dashboard wykrywa EXE Centrów z katalogu
+`centers/` obok własnego EXE; sam EXE Dashboardu nie zawiera dziesięciu Centrów.
 Budowa: [docs/BUILD.md](docs/BUILD.md). Obsługa: [docs/GUI.md](docs/GUI.md).
 Ograniczenia bufora i testów: [docs/DESKTOP-STATUS.md](docs/DESKTOP-STATUS.md).
 Własny kod podlega Prestige Tech Free Use License. Licencje zależności:

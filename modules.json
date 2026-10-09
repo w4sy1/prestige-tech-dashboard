@@ -7,7 +7,7 @@
       "name": "Network Center",
       "category": "Sieć",
       "version": "0.1.0.dev0",
-      "description": "Diagnostyka sieci, urządzenia LAN i analiza wyników.",
+      "description": "Diagnostyka sieci, urządzenia LAN, porty, historia i monitoring ICMP.",
       "executable": "network_center.exe",
       "requirements": [
         "Python 3",
@@ -92,7 +92,7 @@
       "name": "Security Center",
       "category": "Bezpieczeństwo",
       "version": "0.1.0.dev0",
-      "description": "Audyt Windows, inspekcja plików z eksportem JSON/TXT/HTML/PDF i triage.",
+      "description": "Audyt, Malware Triage, archiwa ZIP/TAR i opcjonalne sprawdzenie SHA-256 w VirusTotal.",
       "executable": "security_center.exe",
       "requirements": [
         "Python 3",
@@ -100,7 +100,7 @@
         "Repozytorium prestige-tech"
       ],
       "risk": "safe",
-      "help": "Uruchom z kodu sąsiedniego repozytorium prestige-tech. Wybierz plik do odczytowej inspekcji; ciągi znaków są domyślnie wyłączone. Po udanej analizie możesz zapisać JSON/TXT/HTML lub PDF. Security Center ma również audyt Windows i Malware Triage. Wymagane są Python i PySide6, a PDF wymaga reportlab. Nowy EXE Centrum nie jest jeszcze zweryfikowany.",
+      "help": "Security Center: audyt Windows, Malware Triage, analiza plików i metadanych ZIP/TAR bez rozpakowania. VirusTotal wymaga zgody i VT_API_KEY; wysyłany jest tylko SHA-256. Wynik nie stanowi potwierdzenia infekcji. EXE Centrum wymaga osobnej weryfikacji.",
       "download_url": null,
       "sha256": null
     },
@@ -109,7 +109,7 @@
       "name": "System Center",
       "category": "Komputer i Windows",
       "version": "0.1.0.dev0",
-      "description": "Migawki, diagnostyka i kontrolowane naprawy Windows.",
+      "description": "Migawki, autostart, odczytowy audyt spowolnień i kontrolowane naprawy Windows.",
       "executable": "system_center.exe",
       "requirements": [
         "Python 3",

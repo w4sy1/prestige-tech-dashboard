@@ -45,6 +45,20 @@ class SourceCentersTests(unittest.TestCase):
         module = Module("unknown", "Unknown", "Other", "0", "", "unknown.exe", (), "safe", "")
         self.assertIsNone(self.manager.source_path(module))
 
+    def test_frozen_dashboard_launches_center_beside_executable(self):
+        module = next(m for m in self.manager.modules if m.id == "prestige-network-center")
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            executable = root / "centers" / module.executable
+            executable.parent.mkdir()
+            executable.touch()
+            with patch("module_manager.sys.frozen", True, create=True), \
+                 patch("module_manager.sys.executable", str(root / "dashboard.exe")), \
+                 patch.object(self.manager, "executable_path", return_value=root / "missing.exe"), \
+                 patch("module_manager.subprocess.Popen") as launch:
+                self.manager.launch(module)
+            launch.assert_called_once_with([str(executable)], cwd=executable.parent)
+
     def test_catalog_contains_only_current_centers(self):
         modules = {module.id: module for module in self.manager.modules}
         self.assertEqual(set(modules), set(SOURCE_CENTERS))

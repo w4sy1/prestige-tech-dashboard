@@ -182,9 +182,9 @@ class SimpleHomePage(QWidget):
         actions = QGridLayout()
         actions.setSpacing(11)
         items = (
-            ("◎", "Internet Tools", "Diagnostyka i ustawienia sieci.", "Sieć"),
-            ("▣", "System Tools", "Kontrola i naprawy Windows.", "Komputer i Windows"),
-            ("⬡", "Protection Tools", "Bezpieczeństwo plików i systemu.", "Bezpieczeństwo"),
+            ("◎", "Internet Tools", "Urządzenia LAN, porty i monitoring sieci.", "Sieć"),
+            ("▣", "System Tools", "Autostart, diagnostyka i naprawy Windows.", "Komputer i Windows"),
+            ("⬡", "Protection Tools", "Archiwa, pliki i analiza zagrożeń.", "Bezpieczeństwo"),
             ("▤", "Reports", "Wyniki i raporty serwisowe.", "AI i raporty"),
             ("⚡", "Quick Actions", "Wybierz potrzebne Centrum.", None),
         )

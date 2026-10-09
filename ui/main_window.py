@@ -409,10 +409,7 @@ class MainWindow(QMainWindow):
             )
 
     def roots(self):
-        return [
-            Path.cwd(),
-            Path.cwd().parent,
-        ]
+        return self.mm.local_roots()
 
     def set_portable(self, enabled):
         self.portable_mode = bool(

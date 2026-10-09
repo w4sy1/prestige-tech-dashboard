@@ -7,10 +7,10 @@ from .widgets import *
 from .favorite_links import FavoriteLinksWidget
 
 MAIN = [
-    ("Komputer i Windows","System, rejestr oraz\ndane i odzyskiwanie"),
-    ("Sieć","Diagnostyka sieci, skanowanie\ni monitoring"),
+    ("Komputer i Windows","Autostart, diagnostyka,\nkopie i naprawy"),
+    ("Sieć","Urządzenia LAN, porty\ni monitoring"),
     ("Android","ADB, aplikacje i Termux"),
-    ("Bezpieczeństwo","Kontrole, pliki i integralność"),
+    ("Bezpieczeństwo","Archiwa, pliki, autostart\ni analiza zagrożeń"),
     ("AI i raporty","Analiza oraz raporty serwisowe")
 ]
 

@@ -199,7 +199,7 @@ class ModulesPage(QWidget):
         self.render()
 
     def _portable_candidate(self, module):
-        return self.mm.find_local(module, [Path.cwd(), Path.cwd().parent])
+        return self.mm.find_local(module, self.mm.local_roots())
 
     def render(self):
         while self.grid.count():

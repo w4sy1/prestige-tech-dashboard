@@ -49,6 +49,13 @@ def manifest_path():
     return base / "modules.json"
 
 class ModuleManager:
+    @staticmethod
+    def local_roots():
+        roots = [Path.cwd()]
+        if getattr(sys, "frozen", False):
+            roots.insert(0, Path(sys.executable).resolve().parent)
+        return roots
+
     def __init__(self):
         for p in (APP_DIR, MODULES_DIR, REPORTS_DIR, LOGS_DIR, CONFIG_DIR):
             p.mkdir(parents=True, exist_ok=True)
@@ -110,6 +117,10 @@ class ModuleManager:
         target=self.executable_path(m)
 
         if not target.is_file():
+            if getattr(sys, "frozen", False):
+                local = self.find_local(m, self.local_roots())
+                if local is not None and local.suffix.lower() == ".exe":
+                    return subprocess.Popen([str(local)], cwd=local.parent)
             source = self.source_path(m)
             if source is None:
                 raise FileNotFoundError("Moduł nie jest zainstalowany i nie znaleziono kodu źródłowego Centrum.")
@@ -143,7 +154,7 @@ class ModuleManager:
         if source is not None and not self.is_installed(m):
             return source
         for root in map(Path,roots):
-            for p in (root/m.executable, root/"PRESTIGE-TECH-EXE"/m.executable, root.parent/"PRESTIGE-TECH-EXE"/m.executable, root/"tools"/"network-sentinel"/m.executable):
+            for p in (root/m.executable, root/"centers"/m.executable, root/"PRESTIGE-TECH-EXE"/m.executable, root.parent/"PRESTIGE-TECH-EXE"/m.executable, root/"tools"/"network-sentinel"/m.executable):
                 if p.is_file(): return p
         return None
 
