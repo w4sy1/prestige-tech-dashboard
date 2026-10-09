@@ -4,6 +4,7 @@ from PySide6.QtGui import QPixmap, QDesktopServices, QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QFrame, QLineEdit, QLabel, QMessageBox, QPushButton
 from .theme import *
 from .widgets import *
+from .favorite_links import FavoriteLinksWidget
 
 MAIN = [
     ("Komputer i Windows","System, rejestr oraz\ndane i odzyskiwanie"),
@@ -159,6 +160,8 @@ class HomePage(QWidget):
         main.addLayout(side)
 
         root.addLayout(main)
+        self.favorites = FavoriteLinksWidget()
+        root.addWidget(self.favorites)
 
     def search_now(self):
         q = self.search.text().strip()

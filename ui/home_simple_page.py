@@ -10,6 +10,7 @@ from PySide6.QtCore import Qt, QRect, Signal
 from PySide6.QtGui import QColor, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (QFrame, QGridLayout, QHBoxLayout, QLabel,
                                QPushButton, QVBoxLayout, QWidget)
+from .favorite_links import FavoriteLinksWidget
 
 
 GOLD = "#e9b962"
@@ -227,4 +228,6 @@ class SimpleHomePage(QWidget):
         banner_text.addWidget(copy("PROSTY KOMPUTER. WIĘKSZE MOŻLIWOŚCI.", 9, color=GOLD, bold=True))
         banner_layout.addLayout(banner_text, 1)
         root.addWidget(banner)
+        self.favorites = FavoriteLinksWidget()
+        root.addWidget(self.favorites)
         root.addStretch()

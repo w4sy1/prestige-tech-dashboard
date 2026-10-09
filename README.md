@@ -11,8 +11,8 @@ widokiem a czarno-złotym widokiem z górskim tłem. Wybór jest zapamiętywany 
 Drugi widok zachowuje działające przejścia do Centrów; karty stanu nie pokazują
 fikcyjnych wyników ani nie twierdzą, że ochrona działa bez uruchomienia audytu.
 Oba widoki korzystają z jednego katalogu Centrów i tych samych akcji.
-Drugi widok realizuje opis układu; odwzorowanie wizualne 1:1 wymaga grafik
-referencyjnych.
+Drugi widok realizuje kierunek i układ dostarczonych grafik referencyjnych;
+nie jest pikselową kopią renderu.
 
 Karta **Security Center** uruchamia inspekcję plików z eksportem
 JSON/TXT/HTML/PDF z kodu `prestige-tech`. PDF wymaga `reportlab`.
@@ -78,3 +78,8 @@ Budowa: [docs/BUILD.md](docs/BUILD.md). Obsługa: [docs/GUI.md](docs/GUI.md).
 Ograniczenia bufora i testów: [docs/DESKTOP-STATUS.md](docs/DESKTOP-STATUS.md).
 Własny kod podlega Prestige Tech Free Use License. Licencje zależności:
 THIRD_PARTY_NOTICES.txt.
+# Ważne strony
+
+Oba style strony głównej mają lokalne skróty do maksymalnie sześciu stron HTTPS.
+Pełny adres jest pokazywany przed otwarciem. Skróty można usunąć; aplikacja
+nie dodaje z góry adresów banków ani portali medycznych.
